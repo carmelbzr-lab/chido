@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>חידו</title>
     <meta name="description" content="אפליקציית חידוני טריוויה מהנה עם מאות שאלות">
-    <meta name="theme-color" content="#0C1117">
+    <meta name="theme-color" content="#1A110A">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="חידו">
@@ -14,610 +14,310 @@
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #A78BFA;
-            --primary-dark: #7C3AED;
-            --primary-light: #C4B5FD;
-            --correct: #34D399;
-            --wrong: #FB7185;
-            --bg: #0C1117;
-            --bg-card: #131C27;
-            --bg-card-hover: #1A2736;
-            --text: #E8F0F8;
-            --text-secondary: #8BA4BC;
-            --border: #1E3044;
-            --gold: #FBBF24;
-            --mint: #6EE7B7;
-            --mint-dark: #10B981;
+            --primary: #F59E0B; --primary-dark: #D97706; --primary-light: #FCD34D;
+            --correct: #34D399; --wrong: #F87171;
+            --bg: #1A110A; --bg-card: #241A10; --bg-card-hover: #2E2216;
+            --text: #FFF5E6; --text-secondary: #BFA47A; --border: #3D2E1A;
+            --gold: #F59E0B; --mint: #F59E0B; --mint-dark: #D97706;
+            --accent: #E74C3C; --accent-light: #FF8A65;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            font-family: 'Heebo', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            min-height: 100dvh;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text);
+            min-height: 100dvh; overflow-x: hidden; -webkit-tap-highlight-color: transparent;
         }
-
         body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background:
-                radial-gradient(ellipse at 20% 50%, rgba(167,139,250,0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(110,231,183,0.07) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 80%, rgba(124,58,237,0.06) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 20% 50%, rgba(245,158,11,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(231,76,60,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(217,119,6,0.07) 0%, transparent 50%);
+            pointer-events: none; z-index: 0;
         }
-
-        .app {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 16px;
-            padding-top: env(safe-area-inset-top, 16px);
-            padding-bottom: env(safe-area-inset-bottom, 16px);
-            min-height: 100vh;
-            min-height: 100dvh;
-        }
+        .app { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; padding: 16px;
+            padding-top: env(safe-area-inset-top, 16px); min-height: 100dvh; }
 
         /* HEADER */
-        .header {
-            text-align: center;
-            padding: 16px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-        }
-
+        .header { text-align: center; padding: 16px 0; }
         .logo {
-            font-size: 2.2rem;
-            font-weight: 900;
+            font-size: 2.4rem; font-weight: 900; cursor: pointer; user-select: none;
             background: linear-gradient(135deg, var(--mint), var(--primary-light), var(--primary));
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 3s ease infinite;
-            cursor: pointer;
-            user-select: none;
+            background-size: 200% 200%; -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; animation: gradientShift 3s ease infinite;
         }
+        @keyframes gradientShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
 
-        .stats-nav-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            width: 44px; height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.2rem;
-        }
-        .stats-nav-btn:hover {
-            border-color: var(--primary);
-            background: var(--bg-card-hover);
-            transform: scale(1.1);
-        }
+        /* SCREENS */
+        .screen { display:none; opacity:0; transform:translateY(16px); }
+        .screen.active { display:block; animation: screenIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .screen.exiting { display:block; animation: screenOut 0.2s ease forwards; }
+        @keyframes screenIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes screenOut { from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(-12px)} }
 
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        /* SCREENS + TRANSITIONS */
-        .screen {
-            display: none;
-            opacity: 0;
-            transform: translateY(16px);
-        }
-        .screen.active {
-            display: block;
-            animation: screenIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .screen.exiting {
-            display: block;
-            animation: screenOut 0.25s ease forwards;
-        }
-        @keyframes screenIn {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes screenOut {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(-12px); }
-        }
-
-        /* START SCREEN */
-        .start-screen { text-align: center; padding-top: 50px; }
-        .hero-emoji { font-size: 5rem; margin-bottom: 20px; animation: bounce 2s ease infinite; }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        .hero-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 12px; }
-        .hero-desc {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            margin-bottom: 50px;
-            line-height: 1.7;
-        }
-
+        /* BUTTONS */
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 16px 48px;
-            border: none;
-            border-radius: 50px;
-            font-family: 'Heebo', sans-serif;
-            font-size: 1.15rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            -webkit-tap-highlight-color: transparent;
+            display:inline-flex; align-items:center; justify-content:center; gap:8px;
+            padding:16px 44px; border:none; border-radius:50px;
+            font-family:'Heebo',sans-serif; font-size:1.15rem; font-weight:700;
+            cursor:pointer; transition:all 0.3s ease; -webkit-tap-highlight-color:transparent;
         }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            box-shadow: 0 4px 20px rgba(124,58,237,0.4);
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(124,58,237,0.5); }
-        .btn-primary:active { transform: translateY(0); }
-        .btn-secondary {
-            background: var(--bg-card);
-            color: var(--text);
-            border: 2px solid var(--border);
-        }
-        .btn-secondary:hover { border-color: var(--primary); background: var(--bg-card-hover); }
+        .btn-primary { background:linear-gradient(135deg,var(--primary),var(--primary-dark)); color:white; box-shadow:0 4px 20px rgba(217,119,6,0.4); }
+        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(217,119,6,0.5); }
+        .btn-primary:active { transform:translateY(0); }
+        .btn-secondary { background:var(--bg-card); color:var(--text); border:2px solid var(--border); }
+        .btn-secondary:hover { border-color:var(--primary); background:var(--bg-card-hover); }
+        .btn-sm { padding:8px 20px; font-size:0.9rem; border-radius:12px; }
 
-        /* QUIZ TOP BAR */
-        .quiz-top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-            padding: 8px 0;
-        }
-        .quiz-stats { display: flex; gap: 12px; align-items: center; }
-        .stat-badge {
-            display: flex; align-items: center; gap: 6px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 30px;
-            padding: 8px 14px;
-            font-size: 0.9rem; font-weight: 600;
-        }
-        .stat-badge .icon { font-size: 1rem; }
+        /* ===== START SCREEN ===== */
+        .start-screen { text-align:center; padding-top:40px; }
+        .hero-emoji { font-size:5rem; margin-bottom:16px; animation:bounce 2s ease infinite; }
+        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+        .hero-title { font-size:2rem; font-weight:800; margin-bottom:24px; }
+        .start-btn-area { margin-bottom:36px; }
 
-        /* PROGRESS */
-        .progress-container {
-            background: var(--bg-card);
-            border-radius: 20px;
-            height: 6px;
-            margin-bottom: 24px;
-            overflow: hidden;
-            border: 1px solid var(--border);
+        .nav-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; max-width:500px; margin:0 auto; }
+        .nav-card {
+            background:var(--bg-card); border:1px solid var(--border); border-radius:18px;
+            padding:22px 10px; text-align:center; cursor:pointer; transition:all 0.3s ease;
         }
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--mint-dark), var(--mint));
-            border-radius: 20px;
-            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .progress-text {
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-        }
+        .nav-card:hover { border-color:var(--primary); background:var(--bg-card-hover); transform:translateY(-3px); box-shadow:0 6px 20px rgba(217,119,6,0.15); }
+        .nav-card .nc-icon { font-size:2rem; margin-bottom:8px; }
+        .nav-card .nc-title { font-size:0.9rem; font-weight:700; }
+        .nav-card .nc-desc { font-size:0.7rem; color:var(--text-secondary); margin-top:4px; }
 
-        /* QUESTION - with transition */
-        .question-area {
-            position: relative;
-            overflow: hidden;
+        /* ===== TOPICS SCREEN ===== */
+        .topics-header { text-align:center; margin-bottom:24px; }
+        .topics-header h2 { font-size:1.6rem; font-weight:800; margin-bottom:4px; }
+        .topics-header p { color:var(--text-secondary); font-size:0.9rem; }
+        .topics-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+        .topic-card {
+            background:var(--bg-card); border:1px solid var(--border); border-radius:18px;
+            padding:20px 14px; text-align:center; cursor:pointer; transition:all 0.3s ease;
         }
-        .question-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 28px 24px;
-            margin-bottom: 20px;
-        }
-        .question-card.entering {
-            animation: qSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .question-card.exiting-q {
-            animation: qSlideOut 0.25s ease forwards;
-        }
-        @keyframes qSlideIn {
-            from { opacity: 0; transform: translateX(40px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes qSlideOut {
-            from { opacity: 1; transform: translateX(0); }
-            to { opacity: 0; transform: translateX(-40px); }
-        }
+        .topic-card:hover { border-color:var(--primary); background:var(--bg-card-hover); transform:translateY(-3px); }
+        .topic-card .tc-icon { font-size:2.2rem; margin-bottom:6px; }
+        .topic-card .tc-name { font-size:1rem; font-weight:700; }
+        .topic-card .tc-count { font-size:0.75rem; color:var(--text-secondary); margin-top:3px; }
+        .back-bar { text-align:center; margin-bottom:16px; }
 
-        .question-category {
-            display: inline-flex;
-            align-items: center; gap: 6px;
-            background: rgba(167,139,250,0.15);
-            color: var(--primary-light);
-            border-radius: 20px;
-            padding: 4px 14px;
-            font-size: 0.8rem; font-weight: 600;
-            margin-bottom: 14px;
-        }
-        .question-text {
-            font-size: 1.25rem;
-            font-weight: 700;
-            line-height: 1.7;
-        }
+        /* ===== QUIZ SCREEN ===== */
+        .quiz-top-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; padding:8px 0; }
+        .quiz-stats { display:flex; gap:10px; align-items:center; }
+        .stat-badge { display:flex; align-items:center; gap:5px; background:var(--bg-card); border:1px solid var(--border); border-radius:30px; padding:7px 13px; font-size:0.85rem; font-weight:600; }
+        .quiz-controls { display:flex; gap:8px; align-items:center; }
+        .mute-btn { background:var(--bg-card); border:1px solid var(--border); border-radius:50%; width:38px; height:38px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; transition:all 0.3s; }
+        .mute-btn:hover { border-color:var(--primary); }
 
-        /* ANSWERS with stagger */
-        .answers-grid { display: grid; gap: 10px; margin-bottom: 16px; }
+        .progress-container { background:var(--bg-card); border-radius:20px; height:6px; margin-bottom:24px; overflow:hidden; border:1px solid var(--border); }
+        .progress-bar { height:100%; background:linear-gradient(90deg,var(--mint-dark),var(--mint)); border-radius:20px; transition:width 0.6s cubic-bezier(0.16,1,0.3,1); }
+        .progress-text { text-align:center; font-size:0.85rem; color:var(--text-secondary); margin-bottom:6px; }
+
+        .question-card { background:var(--bg-card); border:1px solid var(--border); border-radius:24px; padding:28px 24px; margin-bottom:20px; }
+        .question-card.entering { animation: qSlideIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .question-card.exiting-q { animation: qSlideOut 0.25s ease forwards; }
+        @keyframes qSlideIn { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
+        @keyframes qSlideOut { from{opacity:1;transform:translateX(0)} to{opacity:0;transform:translateX(-40px)} }
+        .question-category { display:inline-flex; align-items:center; gap:6px; background:rgba(245,158,11,0.15); color:var(--primary-light); border-radius:20px; padding:4px 14px; font-size:0.8rem; font-weight:600; margin-bottom:14px; }
+        .question-text { font-size:1.25rem; font-weight:700; line-height:1.7; }
+
+        .answers-grid { display:grid; gap:10px; margin-bottom:16px; }
         .answer-btn {
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            padding: 16px 20px;
-            font-family: 'Heebo', sans-serif;
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--text);
-            cursor: pointer;
-            transition: all 0.25s ease;
-            text-align: right;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: answerIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            background:var(--bg-card); border:2px solid var(--border); border-radius:16px;
+            padding:16px 20px; font-family:'Heebo',sans-serif; font-size:1rem; font-weight:500;
+            color:var(--text); cursor:pointer; transition:all 0.25s; text-align:right;
+            display:flex; align-items:center; gap:12px;
+            opacity:0; transform:translateY(10px); animation:answerIn 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
         }
-        .answer-btn:nth-child(1) { animation-delay: 0.05s; }
-        .answer-btn:nth-child(2) { animation-delay: 0.1s; }
-        .answer-btn:nth-child(3) { animation-delay: 0.15s; }
-        .answer-btn:nth-child(4) { animation-delay: 0.2s; }
-
-        @keyframes answerIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .answer-btn:hover:not(.disabled) {
-            border-color: var(--primary);
-            background: rgba(167,139,250,0.08);
-            transform: translateX(-4px);
-        }
-        .answer-btn:active:not(.disabled) {
-            transform: scale(0.98);
-        }
-        .answer-btn .answer-letter {
-            width: 34px; height: 34px;
-            border-radius: 50%;
-            background: rgba(167,139,250,0.15);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 0.85rem;
-            color: var(--primary-light);
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-        }
-        .answer-btn.correct {
-            border-color: var(--correct);
-            background: rgba(52,211,153,0.1);
-            animation: correctPop 0.4s ease;
-        }
-        .answer-btn.correct .answer-letter { background: var(--correct); color: white; }
-        .answer-btn.wrong {
-            border-color: var(--wrong);
-            background: rgba(251,113,133,0.1);
-            animation: shake 0.4s ease;
-        }
-        .answer-btn.wrong .answer-letter { background: var(--wrong); color: white; }
-        .answer-btn.disabled { cursor: default; opacity: 0.5; }
-        .answer-btn.disabled.correct { opacity: 1; }
-
-        @keyframes correctPop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(8px); }
-            75% { transform: translateX(-8px); }
-        }
+        .answer-btn:nth-child(1){animation-delay:0.05s} .answer-btn:nth-child(2){animation-delay:0.1s}
+        .answer-btn:nth-child(3){animation-delay:0.15s} .answer-btn:nth-child(4){animation-delay:0.2s}
+        @keyframes answerIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        .answer-btn:hover:not(.disabled) { border-color:var(--primary); background:rgba(245,158,11,0.08); transform:translateX(-4px); }
+        .answer-btn:active:not(.disabled) { transform:scale(0.98); }
+        .answer-btn .answer-letter { width:34px; height:34px; border-radius:50%; background:rgba(245,158,11,0.15); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; color:var(--primary-light); flex-shrink:0; transition:all 0.3s; }
+        .answer-btn.correct { border-color:var(--correct); background:rgba(52,211,153,0.1); animation:correctPop 0.4s ease; }
+        .answer-btn.correct .answer-letter { background:var(--correct); color:white; }
+        .answer-btn.wrong { border-color:var(--wrong); background:rgba(251,113,133,0.1); animation:shake 0.4s ease; }
+        .answer-btn.wrong .answer-letter { background:var(--wrong); color:white; }
+        .answer-btn.disabled { cursor:default; opacity:0.5; }
+        .answer-btn.disabled.correct { opacity:1; }
+        @keyframes correctPop { 0%{transform:scale(1)} 50%{transform:scale(1.02)} 100%{transform:scale(1)} }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(8px)} 75%{transform:translateX(-8px)} }
 
         /* FEEDBACK */
-        .feedback-area {
-            overflow: hidden;
-            max-height: 0;
-            transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .feedback-area.show { max-height: 180px; }
+        .feedback-area { overflow:hidden; max-height:0; transition:max-height 0.45s cubic-bezier(0.16,1,0.3,1); }
+        .feedback-area.show { max-height:280px; }
+        .feedback-card { border-radius:16px; padding:18px 20px; margin-bottom:8px; display:flex; align-items:center; gap:12px; }
+        .feedback-card.correct-feedback { background:rgba(52,211,153,0.1); border:1px solid rgba(52,211,153,0.3); }
+        .feedback-card.wrong-feedback { background:rgba(251,113,133,0.1); border:1px solid rgba(251,113,133,0.3); }
+        .feedback-icon { font-size:1.6rem; flex-shrink:0; }
+        .feedback-title { font-weight:700; font-size:1.05rem; margin-bottom:2px; }
+        .feedback-text { font-size:0.9rem; line-height:1.5; color:var(--text-secondary); }
 
-        .feedback-card {
-            border-radius: 16px;
-            padding: 18px 20px;
-            margin-bottom: 14px;
-            display: flex; align-items: center; gap: 12px;
+        /* FUN FACT TOGGLE */
+        .fact-toggle { display:none; margin-bottom:8px; }
+        .fact-toggle.show { display:block; }
+        .fact-toggle-btn {
+            background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.25); border-radius:12px;
+            padding:10px 16px; cursor:pointer; width:100%; text-align:right; font-family:'Heebo',sans-serif;
+            font-size:0.85rem; font-weight:600; color:var(--primary-light); transition:all 0.3s;
+            display:flex; align-items:center; gap:8px;
         }
-        .feedback-card.correct-feedback {
-            background: rgba(52,211,153,0.1);
-            border: 1px solid rgba(52,211,153,0.3);
-        }
-        .feedback-card.wrong-feedback {
-            background: rgba(251,113,133,0.1);
-            border: 1px solid rgba(251,113,133,0.3);
-        }
-        .feedback-icon { font-size: 1.6rem; flex-shrink: 0; }
-        .feedback-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 2px; }
-        .feedback-text { font-size: 0.9rem; line-height: 1.5; color: var(--text-secondary); }
+        .fact-toggle-btn:hover { background:rgba(245,158,11,0.18); }
+        .fact-toggle-btn .arrow { transition:transform 0.3s; display:inline-block; }
+        .fact-toggle-btn.open .arrow { transform:rotate(180deg); }
+        .fact-content { max-height:0; overflow:hidden; transition:max-height 0.4s ease; }
+        .fact-content.open { max-height:120px; }
+        .fact-text { padding:10px 16px; font-size:0.85rem; color:var(--text-secondary); line-height:1.6; background:rgba(245,158,11,0.05); border-radius:0 0 12px 12px; border:1px solid rgba(245,158,11,0.15); border-top:none; }
 
-        .next-btn-container {
-            text-align: center; margin-top: 14px;
-            opacity: 0;
-            animation: fadeInUp 0.3s ease 0.25s forwards;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .next-btn-container { text-align:center; margin-top:12px; opacity:0; animation:fadeInUp 0.3s ease 0.25s forwards; }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
-        /* RESULTS */
-        .results-screen { text-align: center; padding-top: 16px; }
-        .results-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 36px 24px;
-            margin-bottom: 20px;
-        }
-        .results-emoji { font-size: 3.5rem; margin-bottom: 14px; }
-        .results-title { font-size: 1.7rem; font-weight: 800; margin-bottom: 6px; }
-        .results-subtitle { color: var(--text-secondary); font-size: 1rem; margin-bottom: 28px; }
+        /* ===== RESULTS ===== */
+        .results-screen { text-align:center; padding-top:16px; }
+        .results-card { background:var(--bg-card); border:1px solid var(--border); border-radius:24px; padding:36px 24px; margin-bottom:20px; }
+        .results-emoji { font-size:3.5rem; margin-bottom:14px; }
+        .results-title { font-size:1.6rem; font-weight:800; margin-bottom:6px; }
+        .results-subtitle { color:var(--text-secondary); font-size:1rem; margin-bottom:28px; line-height:1.6; }
+        .score-circle { width:150px; height:150px; margin:0 auto 26px; position:relative; }
+        .score-circle svg { transform:rotate(-90deg); width:150px; height:150px; }
+        .score-circle circle { fill:none; stroke-width:8; }
+        .score-circle .bg { stroke:var(--border); }
+        .score-circle .fg { stroke:var(--primary); stroke-linecap:round; transition:stroke-dashoffset 1.5s cubic-bezier(0.16,1,0.3,1); }
+        .score-number { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; }
+        .score-number .big { font-size:2.2rem; font-weight:900; line-height:1; }
+        .score-number .label { font-size:0.75rem; color:var(--text-secondary); }
+        .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:24px; }
+        .stat-card { background:rgba(245,158,11,0.06); border-radius:16px; padding:14px 10px; }
+        .stat-card .value { font-size:1.4rem; font-weight:800; }
+        .stat-card .label { font-size:0.75rem; color:var(--text-secondary); margin-top:2px; }
+        .results-buttons { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+        .share-btn { background:linear-gradient(135deg,var(--mint-dark),var(--mint)); color:#0C1117; font-weight:700; box-shadow:0 4px 16px rgba(16,185,129,0.3); }
+        .share-btn:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(16,185,129,0.4); }
 
-        .score-circle {
-            width: 150px; height: 150px;
-            margin: 0 auto 26px;
-            position: relative;
-        }
-        .score-circle svg { transform: rotate(-90deg); width: 150px; height: 150px; }
-        .score-circle circle { fill: none; stroke-width: 8; }
-        .score-circle .bg { stroke: var(--border); }
-        .score-circle .fg {
-            stroke: var(--primary);
-            stroke-linecap: round;
-            transition: stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .score-number {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-        .score-number .big { font-size: 2.2rem; font-weight: 900; line-height: 1; }
-        .score-number .label { font-size: 0.75rem; color: var(--text-secondary); }
+        /* ===== ALL-TIME STATS ===== */
+        .all-stats-screen { padding-top:16px; }
+        .all-stats-header { text-align:center; margin-bottom:24px; }
+        .all-stats-header h2 { font-size:1.6rem; font-weight:800; margin-bottom:4px; }
+        .all-stats-header p { color:var(--text-secondary); font-size:0.9rem; }
+        .big-stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:20px; }
+        .big-stat-card { background:var(--bg-card); border:1px solid var(--border); border-radius:20px; padding:20px 14px; text-align:center; }
+        .big-stat-card .emoji { font-size:1.6rem; margin-bottom:6px; }
+        .big-stat-card .value { font-size:1.8rem; font-weight:900; }
+        .big-stat-card .label { font-size:0.75rem; color:var(--text-secondary); margin-top:2px; }
+        .category-stats-title { font-size:1.1rem; font-weight:700; margin-bottom:12px; }
+        .category-stat-row { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:12px 16px; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+        .cat-stat-icon { font-size:1.3rem; }
+        .cat-stat-name { font-weight:600; font-size:0.9rem; flex:1; }
+        .cat-stat-bar-container { flex:1; background:var(--border); border-radius:10px; height:6px; overflow:hidden; }
+        .cat-stat-bar { height:100%; border-radius:10px; background:linear-gradient(90deg,var(--mint-dark),var(--mint)); transition:width 0.6s ease; }
+        .cat-stat-percent { font-weight:700; font-size:0.85rem; min-width:40px; text-align:left; }
+        .reset-stats-btn { display:block; margin:24px auto 0; background:none; border:1px solid var(--border); color:var(--text-secondary); font-family:'Heebo',sans-serif; font-size:0.8rem; padding:8px 18px; border-radius:20px; cursor:pointer; transition:all 0.3s; }
+        .reset-stats-btn:hover { border-color:var(--wrong); color:var(--wrong); }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px; margin-bottom: 24px;
-        }
-        .stat-card {
-            background: rgba(110,231,183,0.08);
-            border-radius: 16px;
-            padding: 14px 10px;
-        }
-        .stat-card .value { font-size: 1.4rem; font-weight: 800; }
-        .stat-card .label { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
-
-        .results-buttons {
-            display: flex; gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .share-btn {
-            background: linear-gradient(135deg, var(--mint-dark), var(--mint));
-            color: #0C1117;
-            font-weight: 700;
-            box-shadow: 0 4px 16px rgba(16,185,129,0.3);
-        }
-        .share-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(16,185,129,0.4);
-        }
-
-        /* STATISTICS SCREEN */
-        .all-stats-screen { padding-top: 16px; }
-        .all-stats-header { text-align: center; margin-bottom: 24px; }
-        .all-stats-header h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 4px; }
-        .all-stats-header p { color: var(--text-secondary); font-size: 0.9rem; }
-
-        .big-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px; margin-bottom: 20px;
-        }
-        .big-stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 20px 14px;
-            text-align: center;
-        }
-        .big-stat-card .emoji { font-size: 1.6rem; margin-bottom: 6px; }
-        .big-stat-card .value { font-size: 1.8rem; font-weight: 900; }
-        .big-stat-card .label { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
-
-        .category-stats-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
-        .category-stat-row {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .cat-stat-icon { font-size: 1.3rem; }
-        .cat-stat-name { font-weight: 600; font-size: 0.9rem; flex: 1; }
-        .cat-stat-bar-container {
-            flex: 1; background: var(--border);
-            border-radius: 10px; height: 6px; overflow: hidden;
-        }
-        .cat-stat-bar {
-            height: 100%; border-radius: 10px;
-            background: linear-gradient(90deg, var(--mint-dark), var(--mint));
-            transition: width 0.6s ease;
-        }
-        .cat-stat-percent { font-weight: 700; font-size: 0.85rem; min-width: 40px; text-align: left; }
-
-        .reset-stats-btn {
-            display: block; margin: 24px auto 0;
-            background: none; border: 1px solid var(--border);
-            color: var(--text-secondary);
-            font-family: 'Heebo', sans-serif;
-            font-size: 0.8rem;
-            padding: 8px 18px; border-radius: 20px;
-            cursor: pointer; transition: all 0.3s ease;
-        }
-        .reset-stats-btn:hover { border-color: var(--wrong); color: var(--wrong); }
-
-        .back-bar { text-align: center; margin-bottom: 16px; }
-
-        /* SHARE CANVAS (hidden) */
-        #shareCanvas { display: none; }
-
-        /* INSTALL BANNER */
-        .install-banner {
-            display: none;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 14px 18px;
-            margin-bottom: 16px;
-            align-items: center;
-            gap: 12px;
-            animation: fadeInUp 0.4s ease;
-        }
-        .install-banner.show { display: flex; }
-        .install-banner-text { flex: 1; font-size: 0.9rem; }
-        .install-banner-text strong { color: var(--mint); }
-        .install-btn {
-            background: var(--primary-dark);
-            color: white;
-            border: none; border-radius: 10px;
-            padding: 8px 16px;
-            font-family: 'Heebo', sans-serif;
-            font-weight: 600; font-size: 0.85rem;
-            cursor: pointer;
-        }
-        .install-dismiss {
-            background: none; border: none;
-            color: var(--text-secondary);
-            font-size: 1.2rem; cursor: pointer;
-            padding: 4px;
-        }
+        /* CONFETTI */
+        .confetti-container { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:999; }
+        .confetti-piece { position:absolute; width:10px; height:10px; top:-10px; animation:confettiFall linear forwards; }
+        @keyframes confettiFall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
 
         /* TOAST */
-        .toast {
-            position: fixed;
-            bottom: 30px; left: 50%;
-            transform: translateX(-50%) translateY(80px);
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 12px 24px;
-            border-radius: 14px;
-            font-size: 0.9rem; font-weight: 600;
-            z-index: 999;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            pointer-events: none;
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--bg-card); border:1px solid var(--border); color:var(--text); padding:12px 24px; border-radius:14px; font-size:0.9rem; font-weight:600; z-index:999; transition:transform 0.4s cubic-bezier(0.16,1,0.3,1); pointer-events:none; }
+        .toast.show { transform:translateX(-50%) translateY(0); }
 
-        /* RESPONSIVE */
-        @media (max-width: 600px) {
-            .app { padding: 10px; }
-            .logo { font-size: 1.8rem; }
-            .question-text { font-size: 1.1rem; }
-            .question-card { padding: 22px 18px; }
-            .answer-btn { padding: 14px 16px; font-size: 0.95rem; }
-            .quiz-stats { gap: 8px; }
-            .stat-badge { padding: 6px 10px; font-size: 0.8rem; }
-            .hero-title { font-size: 1.6rem; }
-            .hero-emoji { font-size: 4rem; }
-            .btn { padding: 14px 32px; font-size: 1rem; }
-            .results-card { padding: 28px 18px; }
-        }
+        /* INSTALL BANNER */
+        .install-banner { display:none; background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:14px 18px; margin-bottom:16px; align-items:center; gap:12px; animation:fadeInUp 0.4s ease; }
+        .install-banner.show { display:flex; }
+        .install-banner-text { flex:1; font-size:0.9rem; }
+        .install-banner-text strong { color:var(--mint); }
+        .install-btn { background:var(--primary-dark); color:white; border:none; border-radius:10px; padding:8px 16px; font-family:'Heebo',sans-serif; font-weight:600; font-size:0.85rem; cursor:pointer; }
+        .install-dismiss { background:none; border:none; color:var(--text-secondary); font-size:1.2rem; cursor:pointer; padding:4px; }
 
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        #shareCanvas { display:none; }
+
+        @media (max-width:600px) {
+            .app{padding:10px} .logo{font-size:1.9rem} .question-text{font-size:1.1rem}
+            .question-card{padding:22px 18px} .answer-btn{padding:14px 16px;font-size:0.95rem}
+            .btn{padding:14px 32px;font-size:1rem} .nav-cards{grid-template-columns:repeat(3,1fr);gap:8px}
+            .nav-card{padding:16px 6px} .nav-card .nc-icon{font-size:1.6rem}
+            .topics-grid{grid-template-columns:repeat(2,1fr);gap:8px} .hero-emoji{font-size:4rem}
+            .hero-title{font-size:1.6rem}
+        }
+        ::-webkit-scrollbar{width:5px} ::-webkit-scrollbar-track{background:var(--bg)} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
     </style>
 </head>
 <body>
+    <div class="confetti-container" id="confettiContainer"></div>
     <div class="app">
-        <div class="header">
-            <div class="logo" onclick="showStart()">חידו</div>
-            <button class="stats-nav-btn" onclick="showAllStats()" title="סטטיסטיקות">📊</button>
-        </div>
+        <div class="header"><div class="logo" onclick="showStart()">חידו</div></div>
 
-        <!-- INSTALL BANNER -->
         <div class="install-banner" id="installBanner">
-            <div class="install-banner-text">
-                <strong>התקינו את האפליקציה</strong> למסך הבית לגישה מהירה!
-            </div>
+            <div class="install-banner-text"><strong>התקינו את האפליקציה</strong> למסך הבית!</div>
             <button class="install-btn" id="installBtn" onclick="installApp()">התקנה</button>
             <button class="install-dismiss" onclick="dismissInstall()">✕</button>
         </div>
 
-        <!-- START SCREEN -->
+        <!-- START -->
         <div class="screen active" id="startScreen">
             <div class="start-screen">
                 <div class="hero-emoji">🧠</div>
                 <h1 class="hero-title">שנתחיל?</h1>
-                <p class="hero-desc">18 שאלות אקראיות מקטגוריות שונות.<br>בסוף תקבלו סיכום מפורט.</p>
-                <button class="btn btn-primary" onclick="startQuiz()">יאללה, מתחילים!</button>
+                <div class="start-btn-area">
+                    <button class="btn btn-primary" onclick="startQuiz()">יאללה, מתחילים!</button>
+                </div>
+                <div class="nav-cards">
+                    <div class="nav-card" onclick="startQuiz()">
+                        <div class="nc-icon">⚡</div>
+                        <div class="nc-title">חידון מהיר</div>
+                        <div class="nc-desc">18 שאלות אקראיות</div>
+                    </div>
+                    <div class="nav-card" onclick="showTopics()">
+                        <div class="nc-icon">📚</div>
+                        <div class="nc-title">לפי נושא</div>
+                        <div class="nc-desc">בחרו קטגוריה</div>
+                    </div>
+                    <div class="nav-card" onclick="showAllStats()">
+                        <div class="nc-icon">📊</div>
+                        <div class="nc-title">סטטיסטיקות</div>
+                        <div class="nc-desc">הנתונים שלכם</div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- QUIZ SCREEN -->
+        <!-- TOPICS -->
+        <div class="screen" id="topicsScreen">
+            <div class="back-bar"><button class="btn btn-secondary btn-sm" onclick="showStart()">← חזרה</button></div>
+            <div class="topics-header"><h2>בחרו נושא</h2><p>כל השאלות מהקטגוריה שבחרתם</p></div>
+            <div class="topics-grid" id="topicsGrid"></div>
+        </div>
+
+        <!-- QUIZ -->
         <div class="screen" id="quizScreen">
             <div class="quiz-top-bar">
                 <div class="quiz-stats">
-                    <div class="stat-badge"><span class="icon">✅</span><span id="correctCount">0</span></div>
-                    <div class="stat-badge"><span class="icon">❌</span><span id="wrongCount">0</span></div>
+                    <div class="stat-badge"><span>✅</span><span id="correctCount">0</span></div>
+                    <div class="stat-badge"><span>❌</span><span id="wrongCount">0</span></div>
                 </div>
-                <button class="btn btn-secondary" style="padding:8px 16px;font-size:0.85rem;border-radius:12px" onclick="quitQuiz()">יציאה</button>
+                <div class="quiz-controls">
+                    <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
+                    <button class="btn btn-secondary btn-sm" onclick="quitQuiz()">יציאה</button>
+                </div>
             </div>
-            <div class="progress-text" id="progressText">שאלה 1 מתוך 18</div>
+            <div class="progress-text" id="progressText"></div>
             <div class="progress-container"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
-            <div class="question-area">
-                <div class="question-card" id="questionCard">
-                    <div class="question-category" id="questionCategory"></div>
-                    <div class="question-text" id="questionText"></div>
-                </div>
+            <div class="question-card" id="questionCard">
+                <div class="question-category" id="questionCategory"></div>
+                <div class="question-text" id="questionText"></div>
             </div>
             <div class="answers-grid" id="answersGrid"></div>
             <div class="feedback-area" id="feedbackArea">
                 <div class="feedback-card" id="feedbackCard">
                     <div class="feedback-icon" id="feedbackIcon"></div>
-                    <div>
-                        <div class="feedback-title" id="feedbackTitle"></div>
-                        <div class="feedback-text" id="feedbackText"></div>
-                    </div>
+                    <div><div class="feedback-title" id="feedbackTitle"></div><div class="feedback-text" id="feedbackText"></div></div>
+                </div>
+                <div class="fact-toggle" id="factToggle">
+                    <button class="fact-toggle-btn" id="factToggleBtn" onclick="toggleFact()">
+                        <span>💡</span> <span>הידעת?</span> <span class="arrow">▼</span>
+                    </button>
+                    <div class="fact-content" id="factContent"><div class="fact-text" id="factText"></div></div>
                 </div>
                 <div class="next-btn-container">
                     <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn">השאלה הבאה ➜</button>
@@ -625,45 +325,36 @@
             </div>
         </div>
 
-        <!-- RESULTS SCREEN -->
+        <!-- RESULTS -->
         <div class="screen" id="resultsScreen">
             <div class="results-screen">
                 <div class="results-card" id="resultsCard">
                     <div class="results-emoji" id="resultsEmoji">🏆</div>
-                    <div class="results-title" id="resultsTitle">סיכום החידון</div>
+                    <div class="results-title" id="resultsTitle"></div>
                     <div class="results-subtitle" id="resultsSubtitle"></div>
                     <div class="score-circle">
                         <svg><circle class="bg" cx="75" cy="75" r="65"></circle>
-                        <circle class="fg" id="scoreCircle" cx="75" cy="75" r="65"
-                            stroke-dasharray="408.4" stroke-dashoffset="408.4"></circle></svg>
-                        <div class="score-number">
-                            <div class="big" id="scorePercent">0%</div>
-                            <div class="label">אחוז הצלחה</div>
-                        </div>
+                        <circle class="fg" id="scoreCircle" cx="75" cy="75" r="65" stroke-dasharray="408.4" stroke-dashoffset="408.4"></circle></svg>
+                        <div class="score-number"><div class="big" id="scorePercent">0%</div><div class="label">אחוז הצלחה</div></div>
                     </div>
                     <div class="stats-grid">
-                        <div class="stat-card"><div class="value" id="statCorrect" style="color:var(--correct)">0</div><div class="label">תשובות נכונות</div></div>
-                        <div class="stat-card"><div class="value" id="statWrong" style="color:var(--wrong)">0</div><div class="label">תשובות שגויות</div></div>
+                        <div class="stat-card"><div class="value" id="statCorrect" style="color:var(--correct)">0</div><div class="label">נכונות</div></div>
+                        <div class="stat-card"><div class="value" id="statWrong" style="color:var(--wrong)">0</div><div class="label">שגויות</div></div>
                     </div>
                 </div>
                 <div class="results-buttons">
                     <button class="btn btn-primary" onclick="startQuiz()">חידון חדש</button>
-                    <button class="btn share-btn" onclick="shareResults()">📤 שיתוף תוצאה</button>
-                    <button class="btn btn-secondary" onclick="showAllStats()">📊 סטטיסטיקות</button>
+                    <button class="btn share-btn" onclick="shareResults()">📤 שיתוף</button>
+                    <button class="btn btn-secondary" onclick="showStart()">🏠 ראשי</button>
                 </div>
             </div>
         </div>
 
-        <!-- ALL-TIME STATISTICS -->
+        <!-- STATS -->
         <div class="screen" id="allStatsScreen">
             <div class="all-stats-screen">
-                <div class="back-bar">
-                    <button class="btn btn-secondary" style="padding:8px 20px;font-size:0.9rem;border-radius:12px" onclick="showStart()">← חזרה</button>
-                </div>
-                <div class="all-stats-header">
-                    <h2>הסטטיסטיקות שלי</h2>
-                    <p>סיכום כל החידונים</p>
-                </div>
+                <div class="back-bar"><button class="btn btn-secondary btn-sm" onclick="showStart()">← חזרה</button></div>
+                <div class="all-stats-header"><h2>הסטטיסטיקות שלי</h2><p>סיכום כל החידונים</p></div>
                 <div class="big-stats-grid" id="bigStatsGrid"></div>
                 <div class="category-stats-title">הצלחה לפי קטגוריה</div>
                 <div id="categoryStatsContainer"></div>
@@ -671,654 +362,539 @@
             </div>
         </div>
     </div>
-
-    <!-- TOAST -->
     <div class="toast" id="toast"></div>
-
-    <!-- SHARE CANVAS -->
     <canvas id="shareCanvas" width="600" height="400"></canvas>
 
-    <script>
-    // ===== QUESTION BANK (200+ questions) =====
-    const questions = [
-        // ===== גיאוגרפיה (25) =====
-        { q: "מהי בירת אוסטרליה?", a: ["סידני", "קנברה", "מלבורן", "בריזביין"], c: 1, cat: "גיאוגרפיה" },
-        { q: "באיזו מדינה נמצא הר קילימנג'רו?", a: ["קניה", "טנזניה", "אוגנדה", "אתיופיה"], c: 1, cat: "גיאוגרפיה" },
-        { q: "מהי המדינה הקטנה ביותר בעולם?", a: ["מונקו", "ותיקן", "סן מרינו", "ליכטנשטיין"], c: 1, cat: "גיאוגרפיה" },
-        { q: "מהו הנהר הארוך ביותר בעולם?", a: ["אמזונס", "נילוס", "מיסיסיפי", "יאנגצה"], c: 1, cat: "גיאוגרפיה" },
-        { q: "מהי בירת קנדה?", a: ["טורונטו", "ונקובר", "אוטווה", "מונטריאול"], c: 2, cat: "גיאוגרפיה" },
-        { q: "באיזו מדינה נמצא מגדל פיזה הנטוי?", a: ["ספרד", "צרפת", "איטליה", "יוון"], c: 2, cat: "גיאוגרפיה" },
-        { q: "מהי האגם הגדול ביותר בעולם?", a: ["ים כספי", "אגם סופריור", "אגם ויקטוריה", "אגם בייקל"], c: 0, cat: "גיאוגרפיה" },
-        { q: "מהי הבירה של ברזיל?", a: ["ריו דה ז'נרו", "סאו פאולו", "ברזיליה", "סלבדור"], c: 2, cat: "גיאוגרפיה" },
-        { q: "באיזו מדינה נמצאת אנגקור ואט?", a: ["תאילנד", "וייטנאם", "קמבודיה", "מיאנמר"], c: 2, cat: "גיאוגרפיה" },
-        { q: "מהי הנקודה העמוקה ביותר באוקיינוסים?", a: ["תעלת מריאנה", "תעלת טונגה", "תעלת פיליפינים", "תעלת פורטו ריקו"], c: 0, cat: "גיאוגרפיה" },
-        { q: "באיזה אוקיינוס נמצא משולש ברמודה?", a: ["השקט", "ההודי", "האטלנטי", "הארקטי"], c: 2, cat: "גיאוגרפיה" },
-        { q: "מהי עיר האורות?", a: ["לונדון", "ניו יורק", "פריז", "טוקיו"], c: 2, cat: "גיאוגרפיה" },
-        { q: "באיזו מדינה נמצא הפיורד הארוך ביותר באירופה?", a: ["נורווגיה", "ניו זילנד", "צ'ילה", "איסלנד"], c: 0, cat: "גיאוגרפיה" },
-        { q: "מהו המפרץ הגדול ביותר בעולם?", a: ["מפרץ מקסיקו", "מפרץ בנגל", "מפרץ הדסון", "המפרץ הפרסי"], c: 1, cat: "גיאוגרפיה" },
-        { q: "מהי בירת ניו זילנד?", a: ["אוקלנד", "וולינגטון", "כרייסטצ'רץ'", "קווינסטאון"], c: 1, cat: "גיאוגרפיה" },
-        { q: "באיזו יבשת נמצאת מדבר סהרה?", a: ["אסיה", "אפריקה", "דרום אמריקה", "אוסטרליה"], c: 1, cat: "גיאוגרפיה" },
-        { q: "מהי המדינה עם הכי הרבה אוכלוסייה?", a: ["סין", "הודו", "ארה\"ב", "אינדונזיה"], c: 1, cat: "גיאוגרפיה" },
-        { q: "באיזו מדינה נמצא מפל ניאגרה?", a: ["רק ארה\"ב", "רק קנדה", "ארה\"ב וקנדה", "מקסיקו"], c: 2, cat: "גיאוגרפיה" },
-        { q: "מהי הבירה של דרום קוריאה?", a: ["בוסאן", "סיאול", "אינצ'ון", "דאגו"], c: 1, cat: "גיאוגרפיה" },
-        { q: "מהו ההר הגבוה ביותר בעולם?", a: ["K2", "אוורסט", "קנצ'נג'ונגה", "מקינלי"], c: 1, cat: "גיאוגרפיה" },
-        { q: "באיזו מדינה נמצא מאצ'ו פיצ'ו?", a: ["בוליביה", "צ'ילה", "פרו", "קולומביה"], c: 2, cat: "גיאוגרפיה" },
-        { q: "מהי הבירה של תורכיה?", a: ["איסטנבול", "אנקרה", "אנטליה", "איזמיר"], c: 1, cat: "גיאוגרפיה" },
-        { q: "כמה יבשות יש בעולם?", a: ["5", "6", "7", "8"], c: 2, cat: "גיאוגרפיה" },
-        { q: "מהי המדינה הגדולה ביותר בעולם?", a: ["סין", "קנדה", "ארה\"ב", "רוסיה"], c: 3, cat: "גיאוגרפיה" },
-        { q: "באיזו מדינה נמצא טאג' מאהל?", a: ["פקיסטן", "הודו", "בנגלדש", "נפאל"], c: 1, cat: "גיאוגרפיה" },
+<script>
+// ===== QUESTIONS (300+) =====
+const questions = [
+    // גיאוגרפיה (30)
+    {q:"מהי בירת אוסטרליה?",a:["סידני","קנברה","מלבורן","בריזביין"],c:1,cat:"גיאוגרפיה",fact:"קנברה נבחרה כבירה ב-1913 כפשרה בין סידני למלבורן שהתחרו על התואר."},
+    {q:"באיזו מדינה נמצא הר קילימנג'רו?",a:["קניה","טנזניה","אוגנדה","אתיופיה"],c:1,cat:"גיאוגרפיה",fact:"קילימנג'רו הוא ההר הגבוה ביותר באפריקה - 5,895 מטרים."},
+    {q:"מהי המדינה הקטנה ביותר בעולם?",a:["מונקו","ותיקן","סן מרינו","ליכטנשטיין"],c:1,cat:"גיאוגרפיה",fact:"שטח הוותיקן הוא רק 0.44 קמ\"ר!"},
+    {q:"מהו הנהר הארוך ביותר בעולם?",a:["אמזונס","נילוס","מיסיסיפי","יאנגצה"],c:1,cat:"גיאוגרפיה",fact:"הנילוס נמשך 6,650 ק\"מ אבל יש ויכוח אם האמזונס לא ארוך יותר."},
+    {q:"מהי בירת קנדה?",a:["טורונטו","ונקובר","אוטווה","מונטריאול"],c:2,cat:"גיאוגרפיה",fact:"אוטווה נבחרה על ידי המלכה ויקטוריה ב-1857."},
+    {q:"באיזו מדינה נמצא מגדל פיזה הנטוי?",a:["ספרד","צרפת","איטליה","יוון"],c:2,cat:"גיאוגרפיה",fact:"המגדל החל להיטות כבר בזמן הבנייה ב-1173."},
+    {q:"מהי האגם הגדולה ביותר בעולם?",a:["ים כספי","אגם סופריור","אגם ויקטוריה","אגם בייקל"],c:0,cat:"גיאוגרפיה",fact:"הים הכספי נקרא 'ים' אך הוא בעצם אגם - הגדול בעולם."},
+    {q:"מהי הבירה של ברזיל?",a:["ריו דה ז'נרו","סאו פאולו","ברזיליה","סלבדור"],c:2,cat:"גיאוגרפיה",fact:"ברזיליה נבנתה במיוחד כבירה ונחנכה ב-1960."},
+    {q:"באיזו מדינה נמצאת אנגקור ואט?",a:["תאילנד","וייטנאם","קמבודיה","מיאנמר"],c:2,cat:"גיאוגרפיה",fact:"אנגקור ואט הוא המבנה הדתי הגדול ביותר בעולם."},
+    {q:"מהי הנקודה העמוקה ביותר באוקיינוסים?",a:["תעלת מריאנה","תעלת טונגה","תעלת פיליפינים","תעלת פורטו ריקו"],c:0,cat:"גיאוגרפיה",fact:"תעלת מריאנה - 11,034 מטר, עמוק יותר מגובה האוורסט."},
+    {q:"באיזה אוקיינוס נמצא משולש ברמודה?",a:["השקט","ההודי","האטלנטי","הארקטי"],c:2,cat:"גיאוגרפיה",fact:"משולש ברמודה נמצא בין מיאמי, ברמודה ופורטו ריקו."},
+    {q:"מהי עיר האורות?",a:["לונדון","ניו יורק","פריז","טוקיו"],c:2,cat:"גיאוגרפיה",fact:"פריז קיבלה את הכינוי כי הייתה מהראשונות עם תאורת רחוב."},
+    {q:"מהי בירת ניו זילנד?",a:["אוקלנד","וולינגטון","כרייסטצ'רץ'","קווינסטאון"],c:1,cat:"גיאוגרפיה",fact:"וולינגטון היא הבירה הדרומית ביותר בעולם."},
+    {q:"מהי המדינה עם הכי הרבה אוכלוסייה?",a:["סין","הודו","ארה\"ב","אינדונזיה"],c:1,cat:"גיאוגרפיה",fact:"הודו עקפה את סין ב-2023 והפכה למדינה הכי מאוכלסת."},
+    {q:"מהו ההר הגבוה ביותר בעולם?",a:["K2","אוורסט","קנצ'נג'ונגה","מקינלי"],c:1,cat:"גיאוגרפיה",fact:"אוורסט - 8,849 מטר. נקרא על שם סיר ג'ורג' אוורסט."},
+    {q:"באיזו מדינה נמצא מאצ'ו פיצ'ו?",a:["בוליביה","צ'ילה","פרו","קולומביה"],c:2,cat:"גיאוגרפיה",fact:"מאצ'ו פיצ'ו נבנה במאה ה-15 על ידי האינקה."},
+    {q:"מהי הבירה של תורכיה?",a:["איסטנבול","אנקרה","אנטליה","איזמיר"],c:1,cat:"גיאוגרפיה",fact:"רוב האנשים חושבים שזו איסטנבול, אבל אנקרה היא הבירה מ-1923."},
+    {q:"כמה יבשות יש בעולם?",a:["5","6","7","8"],c:2,cat:"גיאוגרפיה",fact:"7 יבשות: אסיה, אפריקה, צפון אמריקה, דרום אמריקה, אירופה, אוסטרליה, אנטרקטיקה."},
+    {q:"מהי המדינה הגדולה ביותר בעולם?",a:["סין","קנדה","ארה\"ב","רוסיה"],c:3,cat:"גיאוגרפיה",fact:"רוסיה משתרעת על 17.1 מיליון קמ\"ר - כמעט פי 2 מקנדה."},
+    {q:"באיזו מדינה נמצא טאג' מאהל?",a:["פקיסטן","הודו","בנגלדש","נפאל"],c:1,cat:"גיאוגרפיה",fact:"הקיסר שאה ג'האן בנה אותו לזכר אשתו שנפטרה."},
+    {q:"באיזו מדינה נמצא מפל ניאגרה?",a:["רק ארה\"ב","רק קנדה","ארה\"ב וקנדה","מקסיקו"],c:2,cat:"גיאוגרפיה",fact:"המפל נמצא בגבול בין אונטריו (קנדה) לניו יורק (ארה\"ב)."},
+    {q:"מהי הבירה של דרום קוריאה?",a:["בוסאן","סיאול","אינצ'ון","דאגו"],c:1,cat:"גיאוגרפיה",fact:"סיאול היא אחת הערים הגדולות בעולם עם 10 מיליון תושבים."},
+    {q:"מהו המפרץ הגדול ביותר בעולם?",a:["מפרץ מקסיקו","מפרץ בנגל","מפרץ הדסון","המפרץ הפרסי"],c:1,cat:"גיאוגרפיה",fact:"מפרץ בנגל - 2.17 מיליון קמ\"ר."},
+    {q:"באיזו יבשת נמצאת מדבר סהרה?",a:["אסיה","אפריקה","דרום אמריקה","אוסטרליה"],c:1,cat:"גיאוגרפיה",fact:"סהרה בגודל של כמעט כל שטח ארה\"ב."},
+    {q:"באיזו מדינה נמצא הפיורד הארוך ביותר באירופה?",a:["נורווגיה","ניו זילנד","צ'ילה","איסלנד"],c:0,cat:"גיאוגרפיה",fact:"סוגנה-פיורד בנורווגיה - 204 ק\"מ."},
 
-        // ===== היסטוריה (25) =====
-        { q: "באיזו שנה נפלה חומת ברלין?", a: ["1987", "1989", "1991", "1990"], c: 1, cat: "היסטוריה" },
-        { q: "מי היה הנשיא הראשון של ארצות הברית?", a: ["תומאס ג'פרסון", "ג'ורג' וושינגטון", "ג'ון אדמס", "בנג'מין פרנקלין"], c: 1, cat: "היסטוריה" },
-        { q: "באיזו שנה הסתיימה מלחמת העולם השנייה?", a: ["1943", "1944", "1945", "1946"], c: 2, cat: "היסטוריה" },
-        { q: "מי בנה את הפירמידות בגיזה?", a: ["עבדים", "פועלים מצרים", "חייזרים", "שבויי מלחמה"], c: 1, cat: "היסטוריה" },
-        { q: "באיזו שנה הוקמה מדינת ישראל?", a: ["1946", "1947", "1948", "1949"], c: 2, cat: "היסטוריה" },
-        { q: "מי המציא את הדפוס?", a: ["דה וינצ'י", "יוהנס גוטנברג", "גלילאו", "קופרניקוס"], c: 1, cat: "היסטוריה" },
-        { q: "מהי האימפריה שנמשכה הכי הרבה זמן?", a: ["הרומית", "העות'מאנית", "הביזנטית", "המצרית"], c: 2, cat: "היסטוריה" },
-        { q: "באיזו שנה נחתו בני אדם על הירח?", a: ["1967", "1968", "1969", "1970"], c: 2, cat: "היסטוריה" },
-        { q: "מי כתב את מגילת העצמאות של ארה\"ב?", a: ["וושינגטון", "פרנקלין", "ג'פרסון", "אדמס"], c: 2, cat: "היסטוריה" },
-        { q: "באיזו שנה טבע הטיטאניק?", a: ["1910", "1911", "1912", "1913"], c: 2, cat: "היסטוריה" },
-        { q: "מי היה ראש הממשלה הראשון של ישראל?", a: ["וייצמן", "בן-גוריון", "שרת", "אשכול"], c: 1, cat: "היסטוריה" },
-        { q: "מי המציא את הטלפון?", a: ["אדיסון", "טסלה", "גרהם בל", "מרקוני"], c: 2, cat: "היסטוריה" },
-        { q: "באיזו שנה התחילה מלחמת העולם הראשונה?", a: ["1912", "1913", "1914", "1915"], c: 2, cat: "היסטוריה" },
-        { q: "מי היה מנהיג המהפכה הצרפתית?", a: ["נפוליאון", "רובספייר", "לואי ה-16", "וולטר"], c: 1, cat: "היסטוריה" },
-        { q: "באיזו שנה הוכרז על סיום מלחמת העולם הראשונה?", a: ["1917", "1918", "1919", "1920"], c: 1, cat: "היסטוריה" },
-        { q: "מי גילה את אמריקה?", a: ["מגלן", "קולומבוס", "אמריגו וספוצ'י", "קוק"], c: 1, cat: "היסטוריה" },
-        { q: "באיזו מדינה פרצה המהפכה התעשייתית?", a: ["צרפת", "גרמניה", "אנגליה", "ארה\"ב"], c: 2, cat: "היסטוריה" },
-        { q: "מי היה הקיסר הרומי הראשון?", a: ["יוליוס קיסר", "אוגוסטוס", "נירון", "קליגולה"], c: 1, cat: "היסטוריה" },
-        { q: "באיזו שנה בוטל העבדות בארה\"ב?", a: ["1855", "1860", "1863", "1865"], c: 3, cat: "היסטוריה" },
-        { q: "מי היה ראש ממשלת בריטניה במלחמת העולם השנייה?", a: ["צ'רצ'יל", "צ'מברליין", "אטלי", "לויד ג'ורג'"], c: 0, cat: "היסטוריה" },
-        { q: "באיזו שנה נוסד האו\"ם?", a: ["1943", "1944", "1945", "1946"], c: 2, cat: "היסטוריה" },
-        { q: "מאיזו מדינה היה ג'ינגיס חאן?", a: ["סין", "מונגוליה", "יפן", "קזחסטן"], c: 1, cat: "היסטוריה" },
-        { q: "באיזו שנה הומצא האינטרנט?", a: ["1969", "1979", "1989", "1991"], c: 2, cat: "היסטוריה" },
-        { q: "מי צייר את תקרת הקפלה הסיסטינית?", a: ["רפאל", "דה וינצ'י", "מיכלאנג'לו", "בוטיצ'לי"], c: 2, cat: "היסטוריה" },
-        { q: "באיזו שנה נחתם הסכם השלום בין ישראל למצרים?", a: ["1977", "1978", "1979", "1980"], c: 2, cat: "היסטוריה" },
+    // היסטוריה (28)
+    {q:"באיזו שנה נפלה חומת ברלין?",a:["1987","1989","1991","1990"],c:1,cat:"היסטוריה",fact:"הנפילה קרתה בטעות בגלל הצהרה שגויה לעיתונות."},
+    {q:"מי היה הנשיא הראשון של ארה\"ב?",a:["ג'פרסון","וושינגטון","אדמס","פרנקלין"],c:1,cat:"היסטוריה",fact:"וושינגטון נבחר פה אחד - הנשיא היחיד שזה קרה לו."},
+    {q:"באיזו שנה הסתיימה מלחמת העולם השנייה?",a:["1943","1944","1945","1946"],c:2,cat:"היסטוריה",fact:"הסתיימה רשמית ב-2 בספטמבר 1945 עם כניעת יפן."},
+    {q:"מי בנה את הפירמידות בגיזה?",a:["עבדים","פועלים מצרים","חייזרים","שבויי מלחמה"],c:1,cat:"היסטוריה",fact:"מחקרים הוכיחו שנבנו על ידי פועלים שכירים, לא עבדים."},
+    {q:"באיזו שנה הוקמה מדינת ישראל?",a:["1946","1947","1948","1949"],c:2,cat:"היסטוריה",fact:"בן-גוריון קרא את מגילת העצמאות ב-14 במאי 1948."},
+    {q:"מי המציא את הדפוס?",a:["דה וינצ'י","גוטנברג","גלילאו","קופרניקוס"],c:1,cat:"היסטוריה",fact:"גוטנברג המציא את הדפוס ב-1440, אבל בסין השתמשו בדפוס כבר מהמאה ה-11."},
+    {q:"באיזו שנה נחתו בני אדם על הירח?",a:["1967","1968","1969","1970"],c:2,cat:"היסטוריה",fact:"ניל ארמסטרונג דרך על הירח ב-20 ביולי 1969."},
+    {q:"מי כתב את מגילת העצמאות של ארה\"ב?",a:["וושינגטון","פרנקלין","ג'פרסון","אדמס"],c:2,cat:"היסטוריה",fact:"ג'פרסון כתב את הטיוטה תוך 17 יום בלבד."},
+    {q:"באיזו שנה טבע הטיטאניק?",a:["1910","1911","1912","1913"],c:2,cat:"היסטוריה",fact:"הטיטאניק טבעה במסע הבכורה, 4 ימים אחרי שהפליגה."},
+    {q:"מי היה ראש הממשלה הראשון של ישראל?",a:["וייצמן","בן-גוריון","שרת","אשכול"],c:1,cat:"היסטוריה",fact:"בן-גוריון כיהן ב-2 מנדטים: 1948-1953 ו-1955-1963."},
+    {q:"מי המציא את הטלפון?",a:["אדיסון","טסלה","גרהם בל","מרקוני"],c:2,cat:"היסטוריה",fact:"למעשה, אנטוניו מאוצ'י הגיש פטנט לפני בל אך לא יכל לשלם."},
+    {q:"באיזו שנה התחילה מלחמת העולם הראשונה?",a:["1912","1913","1914","1915"],c:2,cat:"היסטוריה",fact:"המלחמה פרצה אחרי רצח ארכידוכס פרנץ פרדיננד."},
+    {q:"מי גילה את אמריקה?",a:["מגלן","קולומבוס","וספוצ'י","קוק"],c:1,cat:"היסטוריה",fact:"קולומבוס חשב שהוא הגיע להודו - לכן ילידי אמריקה נקראו 'אינדיאנים'."},
+    {q:"באיזו מדינה פרצה המהפכה התעשייתית?",a:["צרפת","גרמניה","אנגליה","ארה\"ב"],c:2,cat:"היסטוריה",fact:"התחילה בערך ב-1760 עם המצאת מכונת הקיטור."},
+    {q:"מי היה הקיסר הרומי הראשון?",a:["יוליוס קיסר","אוגוסטוס","נירון","קליגולה"],c:1,cat:"היסטוריה",fact:"אוגוסטוס שלט 40 שנה ויצר את התקופה הידועה כ'שלום רומא'."},
+    {q:"מי היה ראש ממשלת בריטניה במלחמת העולם השנייה?",a:["צ'רצ'יל","צ'מברליין","אטלי","לויד ג'ורג'"],c:0,cat:"היסטוריה",fact:"צ'רצ'יל ידוע בנאומיו המעוררים השראה שהניעו את העם הבריטי."},
+    {q:"באיזו שנה נוסד האו\"ם?",a:["1943","1944","1945","1946"],c:2,cat:"היסטוריה",fact:"האו\"ם נוסד אחרי מלחמת העולם השנייה כדי למנוע מלחמות עתידיות."},
+    {q:"מאיזו מדינה היה ג'ינגיס חאן?",a:["סין","מונגוליה","יפן","קזחסטן"],c:1,cat:"היסטוריה",fact:"ג'ינגיס חאן יצר את האימפריה הרציפה הגדולה ביותר בהיסטוריה."},
+    {q:"באיזו שנה הומצא האינטרנט?",a:["1969","1979","1989","1991"],c:2,cat:"היסטוריה",fact:"טים ברנרס-לי המציא את ה-WWW ב-1989 ב-CERN."},
+    {q:"מי צייר את תקרת הקפלה הסיסטינית?",a:["רפאל","דה וינצ'י","מיכלאנג'לו","בוטיצ'לי"],c:2,cat:"היסטוריה",fact:"מיכלאנג'לו צייר את התקרה בשכיבה על פיגומים במשך 4 שנים."},
+    {q:"באיזו שנה נחתם הסכם השלום בין ישראל למצרים?",a:["1977","1978","1979","1980"],c:2,cat:"היסטוריה",fact:"הסכם קמפ דיוויד נחתם בין בגין וסאדאת בתיווך קרטר."},
+    {q:"מהי האימפריה שנמשכה הכי הרבה?",a:["הרומית","העות'מאנית","הביזנטית","המצרית"],c:2,cat:"היסטוריה",fact:"הביזנטית נמשכה כ-1,100 שנים - מ-330 עד 1453."},
+    {q:"באיזו שנה בוטל העבדות בארה\"ב?",a:["1855","1860","1863","1865"],c:3,cat:"היסטוריה",fact:"התיקון ה-13 לחוקה אסר רשמית עבדות בכל ארה\"ב."},
 
-        // ===== מדע וטכנולוגיה (25) =====
-        { q: "מהו היסוד הכימי הנפוץ ביותר ביקום?", a: ["חמצן", "פחמן", "מימן", "הליום"], c: 2, cat: "מדע" },
-        { q: "כמה עצמות יש בגוף האדם הבוגר?", a: ["186", "206", "226", "246"], c: 1, cat: "מדע" },
-        { q: "מהו כוכב הלכת הגדול ביותר במערכת השמש?", a: ["שבתאי", "צדק", "נפטון", "אורנוס"], c: 1, cat: "מדע" },
-        { q: "מי פיתח את תורת היחסות?", a: ["ניוטון", "איינשטיין", "הוקינג", "בוהר"], c: 1, cat: "מדע" },
-        { q: "מהו האיבר הגדול ביותר בגוף האדם?", a: ["הכבד", "הריאות", "העור", "המעי"], c: 2, cat: "מדע" },
-        { q: "כמה כרומוזומים יש לאדם?", a: ["44", "46", "48", "42"], c: 1, cat: "מדע" },
-        { q: "מהו הגז העיקרי באטמוספירה?", a: ["חמצן", "פחמן דו-חמצני", "חנקן", "ארגון"], c: 2, cat: "מדע" },
-        { q: "באיזו שנה הושק האייפון הראשון?", a: ["2005", "2006", "2007", "2008"], c: 2, cat: "מדע" },
-        { q: "מהו החומר הקשה ביותר בטבע?", a: ["פלדה", "טיטניום", "יהלום", "טונגסטן"], c: 2, cat: "מדע" },
-        { q: "כמה ליטרים של דם יש בגוף האדם?", a: ["3", "5", "7", "9"], c: 1, cat: "מדע" },
-        { q: "מהו הכוכב הקרוב ביותר לנו (מלבד השמש)?", a: ["סיריוס", "פרוקסימה קנטאורי", "וגה", "ברנרד"], c: 1, cat: "מדע" },
-        { q: "באיזו שנה נוסדה חברת אפל?", a: ["1974", "1975", "1976", "1977"], c: 2, cat: "מדע" },
-        { q: "כמה שיניים יש לאדם בוגר?", a: ["28", "30", "32", "34"], c: 2, cat: "מדע" },
-        { q: "מהו שם הגלקסיה שלנו?", a: ["אנדרומדה", "שביל החלב", "אוריון", "פגסוס"], c: 1, cat: "מדע" },
-        { q: "מי המציא את הנורה החשמלית?", a: ["טסלה", "אדיסון", "פרנקלין", "וואט"], c: 1, cat: "מדע" },
-        { q: "מהי הטמפרטורה של אפס מוחלט בצלזיוס?", a: ["-100°C", "-200°C", "-273°C", "-300°C"], c: 2, cat: "מדע" },
-        { q: "כמה כוכבי לכת יש במערכת השמש?", a: ["7", "8", "9", "10"], c: 1, cat: "מדע" },
-        { q: "מהו הסמל הכימי של זהב?", a: ["Go", "Au", "Ag", "Gd"], c: 1, cat: "מדע" },
-        { q: "מי גילה את הפניצילין?", a: ["פסטר", "פלמינג", "קוך", "ג'נר"], c: 1, cat: "מדע" },
-        { q: "מהי יחידת המדידה של תדירות?", a: ["וואט", "הרץ", "ג'אול", "אוהם"], c: 1, cat: "מדע" },
-        { q: "מהו החלק הקטן ביותר באטום?", a: ["פרוטון", "נויטרון", "אלקטרון", "קוורק"], c: 3, cat: "מדע" },
-        { q: "כמה זמן לוקח לאור מהשמש להגיע לכדור הארץ?", a: ["1 דקה", "4 דקות", "8 דקות", "12 דקות"], c: 2, cat: "מדע" },
-        { q: "מהו כוכב הלכת הקרוב ביותר לשמש?", a: ["נוגה", "כוכב חמה", "מאדים", "כדור הארץ"], c: 1, cat: "מדע" },
-        { q: "מה מודד ברומטר?", a: ["טמפרטורה", "לחות", "לחץ אוויר", "מהירות רוח"], c: 2, cat: "מדע" },
-        { q: "מהו DNA?", a: ["חלבון", "חומצה אמינית", "חומצת גרעין", "סוכר"], c: 2, cat: "מדע" },
+    // מדע (28)
+    {q:"מהו היסוד הכימי הנפוץ ביותר ביקום?",a:["חמצן","פחמן","מימן","הליום"],c:2,cat:"מדע",fact:"מימן מהווה כ-75% מכלל המסה של היקום."},
+    {q:"כמה עצמות יש בגוף האדם הבוגר?",a:["186","206","226","246"],c:1,cat:"מדע",fact:"תינוקות נולדים עם כ-270 עצמות שמתאחות עם הגיל."},
+    {q:"מהו כוכב הלכת הגדול ביותר במערכת השמש?",a:["שבתאי","צדק","נפטון","אורנוס"],c:1,cat:"מדע",fact:"צדק כל כך גדול שכל שאר כוכבי הלכת יכלו להיכנס בתוכו."},
+    {q:"מי פיתח את תורת היחסות?",a:["ניוטון","איינשטיין","הוקינג","בוהר"],c:1,cat:"מדע",fact:"איינשטיין פרסם את תורת היחסות הפרטית ב-1905 בגיל 26 בלבד."},
+    {q:"מהו האיבר הגדול ביותר בגוף האדם?",a:["הכבד","הריאות","העור","המעי"],c:2,cat:"מדע",fact:"העור שוקל כ-3.6 ק\"ג ומשתרע על כ-2 מ\"ר."},
+    {q:"כמה כרומוזומים יש לאדם?",a:["44","46","48","42"],c:1,cat:"מדע",fact:"23 זוגות - 22 אוטוזומים וזוג אחד של כרומוזומי מין."},
+    {q:"מהו הגז העיקרי באטמוספירה?",a:["חמצן","פחמן דו-חמצני","חנקן","ארגון"],c:2,cat:"מדע",fact:"חנקן מהווה 78% מהאטמוספירה, חמצן רק 21%."},
+    {q:"באיזו שנה הושק האייפון הראשון?",a:["2005","2006","2007","2008"],c:2,cat:"מדע",fact:"סטיב ג'ובס חשף את האייפון ב-9 בינואר 2007."},
+    {q:"מהו החומר הקשה ביותר בטבע?",a:["פלדה","טיטניום","יהלום","טונגסטן"],c:2,cat:"מדע",fact:"יהלום הוא הקשה ביותר בטבע, אבל גרפן חזק ממנו!"},
+    {q:"כמה ליטרים של דם יש בגוף האדם?",a:["3","5","7","9"],c:1,cat:"מדע",fact:"הלב שואב את כל הדם בגוף בערך פעם בדקה."},
+    {q:"מהו הכוכב הקרוב ביותר לנו מלבד השמש?",a:["סיריוס","פרוקסימה קנטאורי","וגה","ברנרד"],c:1,cat:"מדע",fact:"פרוקסימה קנטאורי - 4.24 שנות אור מאיתנו."},
+    {q:"כמה שיניים יש לאדם בוגר?",a:["28","30","32","34"],c:2,cat:"מדע",fact:"32 שיניים כולל 4 שיני בינה שצומחות בגיל 17-25."},
+    {q:"מהו שם הגלקסיה שלנו?",a:["אנדרומדה","שביל החלב","אוריון","פגסוס"],c:1,cat:"מדע",fact:"שביל החלב מכיל 200-400 מיליארד כוכבים."},
+    {q:"מי המציא את הנורה החשמלית?",a:["טסלה","אדיסון","פרנקלין","וואט"],c:1,cat:"מדע",fact:"אדיסון לא באמת המציא אותה - הוא שיפר עיצובים קיימים."},
+    {q:"מהי הטמפרטורה של אפס מוחלט?",a:["-100°C","-200°C","-273°C","-300°C"],c:2,cat:"מדע",fact:"בטמפרטורה הזו כל תנועת החלקיקים נעצרת לחלוטין."},
+    {q:"כמה כוכבי לכת יש במערכת השמש?",a:["7","8","9","10"],c:1,cat:"מדע",fact:"פלוטו הורד מהרשימה ב-2006 - נשארו 8."},
+    {q:"מהו הסמל הכימי של זהב?",a:["Go","Au","Ag","Gd"],c:1,cat:"מדע",fact:"Au מגיע מהמילה הלטינית 'Aurum' - זוהר השחר."},
+    {q:"מי גילה את הפניצילין?",a:["פסטר","פלמינג","קוך","ג'נר"],c:1,cat:"מדע",fact:"אלכסנדר פלמינג גילה אותו במקרה ב-1928."},
+    {q:"כמה זמן לוקח לאור מהשמש להגיע לכדור הארץ?",a:["1 דקה","4 דקות","8 דקות","12 דקות"],c:2,cat:"מדע",fact:"בדיוק 8 דקות ו-20 שניות."},
+    {q:"מהו כוכב הלכת הקרוב ביותר לשמש?",a:["נוגה","כוכב חמה","מאדים","כדור הארץ"],c:1,cat:"מדע",fact:"כוכב חמה סובב את השמש תוך 88 יום בלבד."},
+    {q:"מה מודד ברומטר?",a:["טמפרטורה","לחות","לחץ אוויר","מהירות רוח"],c:2,cat:"מדע",fact:"לחץ אוויר נמוך מרמז על גשם קרב."},
+    {q:"מהו DNA?",a:["חלבון","חומצה אמינית","חומצת גרעין","סוכר"],c:2,cat:"מדע",fact:"אם היינו מותחים את כל ה-DNA בתא אחד, הוא היה נמשך 2 מטר."},
+    {q:"באיזו שנה נוסדה חברת אפל?",a:["1974","1975","1976","1977"],c:2,cat:"מדע",fact:"נוסדה במוסך על ידי ג'ובס, ווזניאק ורונלד וויין."},
+    {q:"מהו החלק הקטן ביותר באטום?",a:["פרוטון","נויטרון","אלקטרון","קוורק"],c:3,cat:"מדע",fact:"קוורקים הם חלקיקי היסוד שמרכיבים פרוטונים ונויטרונים."},
 
-        // ===== תרבות ובידור (22) =====
-        { q: "מי צייר את המונה ליזה?", a: ["מיכלאנג'לו", "רפאל", "דה וינצ'י", "בוטיצ'לי"], c: 2, cat: "תרבות" },
-        { q: "מי כתב את 'רומיאו ויוליה'?", a: ["דיקנס", "שייקספיר", "אוסטן", "טוויין"], c: 1, cat: "תרבות" },
-        { q: "באיזו שנה יצא הסרט 'טיטאניק'?", a: ["1995", "1996", "1997", "1998"], c: 2, cat: "תרבות" },
-        { q: "מי הלחין את הסימפוניה החמישית?", a: ["מוצרט", "בטהובן", "באך", "שופן"], c: 1, cat: "תרבות" },
-        { q: "איזה ספר הוא הנמכר ביותר (מלבד דתיים)?", a: ["הארי פוטר", "דון קיחוטה", "סיפור שני ערים", "שר הטבעות"], c: 1, cat: "תרבות" },
-        { q: "מי יצר את סדרת הארי פוטר?", a: ["טולקין", "רולינג", "לואיס", "ריורדן"], c: 1, cat: "תרבות" },
-        { q: "מי צייר את 'ליל הכוכבים'?", a: ["מונה", "פיקאסו", "ואן גוך", "דאלי"], c: 2, cat: "תרבות" },
-        { q: "מי כתב את 'הנסיך הקטן'?", a: ["הוגו", "סנט-אכזופרי", "קאמי", "ורן"], c: 1, cat: "תרבות" },
-        { q: "מי ביים את 'שינדלר'ס ליסט'?", a: ["קופולה", "ספילברג", "סקורסזה", "קובריק"], c: 1, cat: "תרבות" },
-        { q: "באיזו שנה יצא סרט מלחמת הכוכבים הראשון?", a: ["1975", "1976", "1977", "1978"], c: 2, cat: "תרבות" },
-        { q: "מי חיבר את 'ארבע העונות'?", a: ["באך", "מוצרט", "ויוואלדי", "הנדל"], c: 2, cat: "תרבות" },
-        { q: "מי כתב את 'מאה שנות בדידות'?", a: ["בורחס", "מארקס", "גרסיה מארקס", "נרודה"], c: 2, cat: "תרבות" },
-        { q: "באיזו מדינה נולד מוצרט?", a: ["גרמניה", "אוסטריה", "איטליה", "צ'כיה"], c: 1, cat: "תרבות" },
-        { q: "מי יצר את הפסל 'דויד'?", a: ["דה וינצ'י", "מיכלאנג'לו", "דונטלו", "רפאל"], c: 1, cat: "תרבות" },
-        { q: "מי צייר את 'הצעקה'?", a: ["פיקאסו", "מונק", "דאלי", "קנדינסקי"], c: 1, cat: "תרבות" },
-        { q: "באיזו עיר נמצא מוזיאון הלובר?", a: ["לונדון", "רומא", "פריז", "מדריד"], c: 2, cat: "תרבות" },
-        { q: "מי כתב את 'הזקן והים'?", a: ["סטיינבק", "המינגוויי", "פיצג'רלד", "פוקנר"], c: 1, cat: "תרבות" },
-        { q: "באיזו שנה יצא הסרט 'הסנדק'?", a: ["1970", "1971", "1972", "1973"], c: 2, cat: "תרבות" },
-        { q: "מי כתב את '1984'?", a: ["הכסלי", "אורוול", "ברדבורי", "וולס"], c: 1, cat: "תרבות" },
-        { q: "מי הלחין את 'ברבור האגם'?", a: ["שטראוס", "צ'ייקובסקי", "בטהובן", "שופן"], c: 1, cat: "תרבות" },
-        { q: "מי ביים את 'צעד מעבר' (Inception)?", a: ["ספילברג", "נולן", "סקורסזה", "טרנטינו"], c: 1, cat: "תרבות" },
-        { q: "באיזו שנה יצא הסרט 'מטריקס'?", a: ["1997", "1998", "1999", "2000"], c: 2, cat: "תרבות" },
+    // תרבות (24)
+    {q:"מי צייר את המונה ליזה?",a:["מיכלאנג'לו","רפאל","דה וינצ'י","בוטיצ'לי"],c:2,cat:"תרבות",fact:"המונה ליזה נמצאת בלובר מאחורי זכוכית משוריינת."},
+    {q:"מי כתב את 'רומיאו ויוליה'?",a:["דיקנס","שייקספיר","אוסטן","טוויין"],c:1,cat:"תרבות",fact:"שייקספיר כתב את המחזה ב-1597 בהתבסס על סיפור איטלקי."},
+    {q:"באיזו שנה יצא הסרט 'טיטאניק'?",a:["1995","1996","1997","1998"],c:2,cat:"תרבות",fact:"הסרט עלה יותר מבניית הטיטאניק המקורית."},
+    {q:"מי הלחין את הסימפוניה החמישית?",a:["מוצרט","בטהובן","באך","שופן"],c:1,cat:"תרבות",fact:"בטהובן היה כמעט חירש לחלוטין כשכתב אותה."},
+    {q:"איזה ספר הוא הנמכר ביותר (מלבד דתיים)?",a:["הארי פוטר","דון קיחוטה","סיפור שני ערים","שר הטבעות"],c:1,cat:"תרבות",fact:"דון קיחוטה נכתב ב-1605 ונמכרו ממנו מעל 500 מיליון עותקים."},
+    {q:"מי יצר את סדרת הארי פוטר?",a:["טולקין","רולינג","לואיס","ריורדן"],c:1,cat:"תרבות",fact:"רולינג כתבה את הספר הראשון בבית קפה באדינבורו."},
+    {q:"מי צייר את 'ליל הכוכבים'?",a:["מונה","פיקאסו","ואן גוך","דאלי"],c:2,cat:"תרבות",fact:"ואן גוך צייר אותו ממוסד פסיכיאטרי בצרפת ב-1889."},
+    {q:"מי כתב את 'הנסיך הקטן'?",a:["הוגו","סנט-אכזופרי","קאמי","ורן"],c:1,cat:"תרבות",fact:"תורגם ליותר מ-300 שפות - אחד הספרים המתורגמים ביותר."},
+    {q:"מי ביים את 'שינדלר'ס ליסט'?",a:["קופולה","ספילברג","סקורסזה","קובריק"],c:1,cat:"תרבות",fact:"ספילברג סירב לקבל משכורת על הסרט כי הרגיש שזה 'כסף דם'."},
+    {q:"באיזו שנה יצא מלחמת הכוכבים הראשון?",a:["1975","1976","1977","1978"],c:2,cat:"תרבות",fact:"ג'ורג' לוקאס לא האמין שהסרט יצליח וויתר על המשכורת שלו תמורת זכויות הסחורה."},
+    {q:"מי חיבר את 'ארבע העונות'?",a:["באך","מוצרט","ויוואלדי","הנדל"],c:2,cat:"תרבות",fact:"ויוואלדי היה כומר ג'ינג'י שכונה 'הכומר האדום'."},
+    {q:"באיזו מדינה נולד מוצרט?",a:["גרמניה","אוסטריה","איטליה","צ'כיה"],c:1,cat:"תרבות",fact:"מוצרט חיבר את היצירה הראשונה שלו בגיל 5."},
+    {q:"מי יצר את הפסל 'דויד'?",a:["דה וינצ'י","מיכלאנג'לו","דונטלו","רפאל"],c:1,cat:"תרבות",fact:"מיכלאנג'לו פיסל את דויד מגוש שיש שאומנים אחרים ויתרו עליו."},
+    {q:"מי צייר את 'הצעקה'?",a:["פיקאסו","מונק","דאלי","קנדינסקי"],c:1,cat:"תרבות",fact:"הציור נגנב פעמיים ממוזיאונים בנורווגיה."},
+    {q:"מי כתב את '1984'?",a:["הכסלי","אורוול","ברדבורי","וולס"],c:1,cat:"תרבות",fact:"אורוול כתב את הספר ב-1949 - תיאר עתיד דיסטופי מפחיד."},
+    {q:"מי הלחין את 'ברבור האגם'?",a:["שטראוס","צ'ייקובסקי","בטהובן","שופן"],c:1,cat:"תרבות",fact:"ההצגה הראשונה ב-1877 נחשבה לכישלון. היום זה הבלט הכי מפורסם."},
+    {q:"מי ביים את 'צעד מעבר' (Inception)?",a:["ספילברג","נולן","סקורסזה","טרנטינו"],c:1,cat:"תרבות",fact:"נולן כתב את התסריט במשך 10 שנים לפני שהרגיש מוכן לביים."},
+    {q:"באיזו שנה יצא 'מטריקס'?",a:["1997","1998","1999","2000"],c:2,cat:"תרבות",fact:"כל השחקנים עברו 4 חודשי אימוני קונג פו לפני הצילומים."},
+    {q:"מי כתב את 'הזקן והים'?",a:["סטיינבק","המינגוויי","פיצג'רלד","פוקנר"],c:1,cat:"תרבות",fact:"המינגוויי זכה על הספר הזה בפרס נובל לספרות."},
+    {q:"באיזו שנה יצא 'הסנדק'?",a:["1970","1971","1972","1973"],c:2,cat:"תרבות",fact:"מרלון ברנדו שם צמר גפן בלחיים שלו כדי ליצור את המראה של דון קורליאונה."},
 
-        // ===== ספורט (20) =====
-        { q: "באיזו מדינה המציאו את הכדורגל המודרני?", a: ["ברזיל", "ספרד", "אנגליה", "גרמניה"], c: 2, cat: "ספורט" },
-        { q: "כמה שחקנים יש בקבוצת כדורסל על המגרש?", a: ["4", "5", "6", "7"], c: 1, cat: "ספורט" },
-        { q: "מי הוא שחקן הכדורגל עם הכי הרבה שערים?", a: ["מסי", "רונאלדו", "פלה", "לבנדובסקי"], c: 1, cat: "ספורט" },
-        { q: "באיזו עיר היו האולימפיאדה המודרנית הראשונה?", a: ["רומא", "לונדון", "אתונה", "פריז"], c: 2, cat: "ספורט" },
-        { q: "כמה זמן נמשכת מחצית בכדורגל?", a: ["30 דקות", "40 דקות", "45 דקות", "50 דקות"], c: 2, cat: "ספורט" },
-        { q: "מהו הספורט הפופולרי ביותר בעולם?", a: ["כדורסל", "קריקט", "כדורגל", "טניס"], c: 2, cat: "ספורט" },
-        { q: "כמה טבעות יש בסמל האולימפי?", a: ["4", "5", "6", "7"], c: 1, cat: "ספורט" },
-        { q: "מי זכה בכי הרבה גראנד סלאם בטניס גברים?", a: ["פדרר", "נדאל", "ג'וקוביץ'", "סמפרס"], c: 2, cat: "ספורט" },
-        { q: "באיזו מדינה המציאו את הקריקט?", a: ["הודו", "אנגליה", "אוסטרליה", "פקיסטן"], c: 1, cat: "ספורט" },
-        { q: "כמה שחקנים יש בקבוצת כדורגל?", a: ["9", "10", "11", "12"], c: 2, cat: "ספורט" },
-        { q: "מי הוא שחקן הכדורסל הטוב ביותר בכל הזמנים?", a: ["לברון", "ג'ורדן", "קובי", "שאקיל"], c: 1, cat: "ספורט" },
-        { q: "כמה סטים יש במשחק טניס מלא (גברים)?", a: ["3", "4", "5", "6"], c: 2, cat: "ספורט" },
-        { q: "באיזו מדינה נערך מונדיאל 2022?", a: ["רוסיה", "קטאר", "סעודיה", "איחוד האמירויות"], c: 1, cat: "ספורט" },
-        { q: "מהו האורך של מרתון?", a: ["36 ק\"מ", "40 ק\"מ", "42.195 ק\"מ", "45 ק\"מ"], c: 2, cat: "ספורט" },
-        { q: "מי הוא האתלט שזכה בכי הרבה מדליות אולימפיות?", a: ["בולט", "פלפס", "לואיס", "נורמי"], c: 1, cat: "ספורט" },
-        { q: "באיזה ספורט משתמשים במחבט ובתנור (שאטל)?", a: ["טניס", "בדמינטון", "סקווש", "פינג פונג"], c: 1, cat: "ספורט" },
-        { q: "כמה שחקנים בקבוצת רוגבי?", a: ["11", "13", "15", "17"], c: 2, cat: "ספורט" },
-        { q: "מי המציא את הכדורסל?", a: ["נייסמית'", "מורגן", "ספולדינג", "סטרן"], c: 0, cat: "ספורט" },
-        { q: "באיזו שנה נערכה אולימפיאדת ברלין?", a: ["1932", "1934", "1936", "1938"], c: 2, cat: "ספורט" },
-        { q: "מהו הספורט הלאומי של יפן?", a: ["ג'ודו", "קראטה", "סומו", "קנדו"], c: 2, cat: "ספורט" },
+    // ספורט (22)
+    {q:"באיזו מדינה המציאו את הכדורגל המודרני?",a:["ברזיל","ספרד","אנגליה","גרמניה"],c:2,cat:"ספורט",fact:"החוקים הרשמיים נקבעו ב-1863 באנגליה."},
+    {q:"כמה שחקנים בקבוצת כדורסל על המגרש?",a:["4","5","6","7"],c:1,cat:"ספורט",fact:"כדורסל הומצא ב-1891 עם סל אפרסקים כסל."},
+    {q:"מי שחקן הכדורגל עם הכי הרבה שערים?",a:["מסי","רונאלדו","פלה","לבנדובסקי"],c:1,cat:"ספורט",fact:"רונאלדו הגיע ליותר מ-900 שערים בקריירה."},
+    {q:"באיזו עיר היו האולימפיאדה המודרנית הראשונה?",a:["רומא","לונדון","אתונה","פריז"],c:2,cat:"ספורט",fact:"האולימפיאדה הראשונה ב-1896 - 241 ספורטאים בלבד."},
+    {q:"כמה זמן נמשכת מחצית בכדורגל?",a:["30 דקות","40 דקות","45 דקות","50 דקות"],c:2,cat:"ספורט",fact:"תוספת הזמן הוכנסה אחרי משחק ב-1891."},
+    {q:"מהו הספורט הפופולרי ביותר בעולם?",a:["כדורסל","קריקט","כדורגל","טניס"],c:2,cat:"ספורט",fact:"לכדורגל יש מעל 4 מיליארד אוהדים ברחבי העולם."},
+    {q:"כמה טבעות יש בסמל האולימפי?",a:["4","5","6","7"],c:1,cat:"ספורט",fact:"5 הטבעות מייצגות את 5 היבשות המשתתפות."},
+    {q:"מי זכה בכי הרבה גראנד סלאם בטניס גברים?",a:["פדרר","נדאל","ג'וקוביץ'","סמפרס"],c:2,cat:"ספורט",fact:"ג'וקוביץ' שבר את השיא עם 24 תארים."},
+    {q:"כמה שחקנים בקבוצת כדורגל?",a:["9","10","11","12"],c:2,cat:"ספורט",fact:"11 שחקנים כולל שוער. 7 הוא המינימום להמשך משחק."},
+    {q:"מי שחקן הכדורסל הטוב בכל הזמנים?",a:["לברון","ג'ורדן","קובי","שאקיל"],c:1,cat:"ספורט",fact:"ג'ורדן זכה ב-6 אליפויות ו-6 פרסי MVP של הגמר."},
+    {q:"באיזו מדינה נערך מונדיאל 2022?",a:["רוסיה","קטאר","סעודיה","איחוד האמירויות"],c:1,cat:"ספורט",fact:"המונדיאל הראשון שנערך בחורף ובמזרח התיכון."},
+    {q:"מהו האורך של מרתון?",a:["36 ק\"מ","40 ק\"מ","42.195 ק\"מ","45 ק\"מ"],c:2,cat:"ספורט",fact:"המרחק נקבע באולימפיאדת לונדון 1908 כדי שהמלכה תוכל לראות את הסיום."},
+    {q:"מי הספורטאי עם הכי הרבה מדליות אולימפיות?",a:["בולט","פלפס","לואיס","נורמי"],c:1,cat:"ספורט",fact:"מייקל פלפס זכה ב-28 מדליות - 23 מהן זהב!"},
+    {q:"מי המציא את הכדורסל?",a:["נייסמית'","מורגן","ספולדינג","סטרן"],c:0,cat:"ספורט",fact:"ג'יימס נייסמית' המציא את המשחק כפעילות חורף לתלמידים."},
+    {q:"מהו הספורט הלאומי של יפן?",a:["ג'ודו","קראטה","סומו","קנדו"],c:2,cat:"ספורט",fact:"סומו נחשב לספורט קדוש עם טקסים שינטואיסטים."},
+    {q:"כמה סטים יש במשחק טניס מלא (גברים)?",a:["3","4","5","6"],c:2,cat:"ספורט",fact:"בגראנד סלאם גברים משחקים עד 5 סטים, נשים עד 3."},
+    {q:"כמה שחקנים בקבוצת רוגבי?",a:["11","13","15","17"],c:2,cat:"ספורט",fact:"ברוגבי 7 יש רק 7 שחקנים - גרסה מקוצרת ומהירה."},
 
-        // ===== טבע ובעלי חיים (20) =====
-        { q: "מהו בעל החיים המהיר ביותר?", a: ["אריה", "ברדלס", "נשר", "דולפין"], c: 1, cat: "טבע" },
-        { q: "כמה לבבות יש לתמנון?", a: ["1", "2", "3", "4"], c: 2, cat: "טבע" },
-        { q: "מהו בעל החיים הגדול ביותר שחי אי פעם?", a: ["דינוזאור", "לוויתן כחול", "מגלודון", "פיל אפריקאי"], c: 1, cat: "טבע" },
-        { q: "כמה שנים יכולה צב ענק לחיות?", a: ["50", "100", "150", "200"], c: 3, cat: "טבע" },
-        { q: "מהו החרק הכי חזק ביחס לגודלו?", a: ["נמלה", "חיפושית קרנף", "פרפר", "גמל שלמה"], c: 1, cat: "טבע" },
-        { q: "איזה בעל חיים ישן הכי הרבה?", a: ["חתול", "עטלף", "קואלה", "עצלן"], c: 2, cat: "טבע" },
-        { q: "כמה עיניים יש לעכביש?", a: ["4", "6", "8", "10"], c: 2, cat: "טבע" },
-        { q: "מהו הציפור הגדולה ביותר בעולם?", a: ["נשר", "יען", "אלבטרוס", "קונדור"], c: 1, cat: "טבע" },
-        { q: "איזה בעל חיים הוא היונק היחיד שמעופף?", a: ["סנאי מעופף", "עטלף", "לטאת מעופפת", "דג מעופף"], c: 1, cat: "טבע" },
-        { q: "כמה זרועות יש לכוכב ים?", a: ["3", "4", "5", "6"], c: 2, cat: "טבע" },
-        { q: "מהו בעל החיים עם התוחלת החיים הארוכה ביותר?", a: ["צב ענק", "לוויתן קשת", "תוכי", "פיל"], c: 1, cat: "טבע" },
-        { q: "איזה בעל חיים יכול לשנות את צבעו?", a: ["לטאה", "זיקית", "צפרדע", "נחש"], c: 1, cat: "טבע" },
-        { q: "מהו הדג המהיר ביותר?", a: ["כריש", "דג חרב", "טונה", "דולפין"], c: 1, cat: "טבע" },
-        { q: "כמה רגליים יש לנדל?", a: ["6", "8", "40", "100"], c: 2, cat: "טבע" },
-        { q: "מהו החיה הארסית ביותר בעולם?", a: ["נחש קוברה", "עכביש", "מדוזת קופסה", "עקרב"], c: 2, cat: "טבע" },
-        { q: "איזה יונק מטיל ביצים?", a: ["ערפד", "ברווזן", "דלפין", "שועל"], c: 1, cat: "טבע" },
-        { q: "כמה קיבות יש לפרה?", a: ["1", "2", "3", "4"], c: 3, cat: "טבע" },
-        { q: "מהו העץ הגבוה ביותר בעולם?", a: ["אקליפטוס", "סקויה", "עץ סרו", "אורן"], c: 1, cat: "טבע" },
-        { q: "כמה שנים חי פרפר?", a: ["יום אחד", "שבוע", "2-4 שבועות", "שנה"], c: 2, cat: "טבע" },
-        { q: "מה מיוחד בזיכרון של דג זהב?", a: ["אין לו", "3 שניות", "הוא טוב למדי", "יום אחד"], c: 2, cat: "טבע" },
+    // טבע (22)
+    {q:"מהו בעל החיים המהיר ביותר?",a:["אריה","ברדלס","נשר","דולפין"],c:1,cat:"טבע",fact:"הברדלס מגיע ל-112 קמ\"ש ב-3 שניות!"},
+    {q:"כמה לבבות יש לתמנון?",a:["1","2","3","4"],c:2,cat:"טבע",fact:"אחד שואב דם לגוף ושניים שואבים דם לזימים."},
+    {q:"מהו בעל החיים הגדול ביותר שחי אי פעם?",a:["דינוזאור","לוויתן כחול","מגלודון","פיל"],c:1,cat:"טבע",fact:"הלוויתן הכחול - 30 מטר ו-150 טון."},
+    {q:"כמה שנים יכולה צב ענק לחיות?",a:["50","100","150","200"],c:3,cat:"טבע",fact:"הצב המבוגר ביותר שתועד הגיע לגיל 188."},
+    {q:"מהו החרק הכי חזק ביחס לגודלו?",a:["נמלה","חיפושית קרנף","פרפר","גמל שלמה"],c:1,cat:"טבע",fact:"חיפושית הקרנף נושאת פי 1,141 ממשקל גופה!"},
+    {q:"איזה בעל חיים ישן הכי הרבה?",a:["חתול","עטלף","קואלה","עצלן"],c:2,cat:"טבע",fact:"הקואלה ישנה עד 22 שעות כי עלי אקליפטוס עניים באנרגיה."},
+    {q:"כמה עיניים יש לעכביש?",a:["4","6","8","10"],c:2,cat:"טבע",fact:"לרוב העכבישים 8 עיניים, אבל יש מינים עם 6, 4 ו-2."},
+    {q:"מהו הציפור הגדולה ביותר?",a:["נשר","יען","אלבטרוס","קונדור"],c:1,cat:"טבע",fact:"היען יכולה להגיע לגובה 2.7 מטר ולמשקל 150 ק\"ג."},
+    {q:"איזה יונק הוא היחיד שמעופף?",a:["סנאי מעופף","עטלף","לטאה מעופפת","דג מעופף"],c:1,cat:"טבע",fact:"סנאים מעופפים לא באמת עפים - הם מדאים."},
+    {q:"כמה זרועות יש לכוכב ים?",a:["3","4","5","6"],c:2,cat:"טבע",fact:"כוכב ים יכול לצמיח זרוע חדשה אם נקטעה."},
+    {q:"איזה בעל חיים יכול לשנות צבעו?",a:["לטאה","זיקית","צפרדע","נחש"],c:1,cat:"טבע",fact:"זיקיות משנות צבע בעיקר בגלל מצב רוח וטמפרטורה, לא הסוואה."},
+    {q:"איזה יונק מטיל ביצים?",a:["ערפד","ברווזן","דולפין","שועל"],c:1,cat:"טבע",fact:"הברווזן הוא אחד משני היונקים בלבד שמטילים ביצים."},
+    {q:"כמה קיבות יש לפרה?",a:["1","2","3","4"],c:3,cat:"טבע",fact:"4 קיבות שעוזרות לעכל צמחים קשים."},
+    {q:"מהו העץ הגבוה ביותר בעולם?",a:["אקליפטוס","סקויה","סרו","אורן"],c:1,cat:"טבע",fact:"עץ הסקויה הגבוה ביותר - 'היפריון' - 115 מטר."},
+    {q:"מה מיוחד בזיכרון של דג זהב?",a:["אין לו","3 שניות","הוא טוב למדי","יום אחד"],c:2,cat:"טבע",fact:"בניגוד למיתוס, לדגי זהב יש זיכרון של לפחות 5 חודשים!"},
+    {q:"מהו החיה הארסית ביותר?",a:["קוברה","עכביש","מדוזת קופסה","עקרב"],c:2,cat:"טבע",fact:"מדוזת הקופסה יכולה להרוג אדם תוך דקות ספורות."},
 
-        // ===== ישראל (18) =====
-        { q: "מהי העיר העתיקה ביותר בישראל?", a: ["ירושלים", "יפו", "באר שבע", "עכו"], c: 1, cat: "ישראל" },
-        { q: "מהו ההר הגבוה ביותר בישראל?", a: ["מירון", "חרמון", "תבור", "הצופים"], c: 1, cat: "ישראל" },
-        { q: "באיזו שנה שוחררה ירושלים?", a: ["1965", "1966", "1967", "1968"], c: 2, cat: "ישראל" },
-        { q: "מי היה ראש הממשלה במלחמת יום כיפור?", a: ["אשכול", "גולדה מאיר", "רבין", "בגין"], c: 1, cat: "ישראל" },
-        { q: "מהו הגוף המימי הנמוך ביותר בעולם?", a: ["כנרת", "ים המלח", "טבריה", "הירדן"], c: 1, cat: "ישראל" },
-        { q: "כמה ימים יש בחג הסוכות?", a: ["5", "7", "8", "10"], c: 1, cat: "ישראל" },
-        { q: "מי כתב את התקווה?", a: ["ביאליק", "אימבר", "טשרניחובסקי", "רחל"], c: 1, cat: "ישראל" },
-        { q: "מהי העיר הגדולה ביותר בישראל?", a: ["תל אביב", "ירושלים", "חיפה", "באר שבע"], c: 1, cat: "ישראל" },
-        { q: "כמה נשיאים היו לישראל עד 2024?", a: ["10", "11", "12", "13"], c: 2, cat: "ישראל" },
-        { q: "מהי נקודת השפל של ישראל?", a: ["ים המלח", "עין גדי", "ערבה", "אילת"], c: 0, cat: "ישראל" },
-        { q: "באיזו שנה נרצח יצחק רבין?", a: ["1993", "1994", "1995", "1996"], c: 2, cat: "ישראל" },
-        { q: "מי הקים את עיר תל אביב?", a: ["הרצל", "רוטשילד", "דיזנגוף", "בן-גוריון"], c: 2, cat: "ישראל" },
-        { q: "מהו הצמח הלאומי של ישראל?", a: ["זית", "כלנית", "צבר", "רקפת"], c: 1, cat: "ישראל" },
-        { q: "כמה ק\"מ אורך ישראל?", a: ["250", "350", "424", "500"], c: 2, cat: "ישראל" },
-        { q: "באיזו שנה נפתח תעלת סואץ מחדש אחרי מלחמת 73?", a: ["1974", "1975", "1976", "1977"], c: 1, cat: "ישראל" },
-        { q: "מהו שם הנהר הארוך ביותר בישראל?", a: ["הירקון", "הירדן", "הקישון", "הלכיש"], c: 1, cat: "ישראל" },
-        { q: "מי היה הרמטכ\"ל במלחמת ששת הימים?", a: ["דיין", "רבין", "בר-לב", "שרון"], c: 1, cat: "ישראל" },
-        { q: "כמה מצביעים צריך כדי להיבחר לכנסת?", a: ["אחוז חסימה", "51%", "רוב רגיל", "75,000"], c: 0, cat: "ישראל" },
+    // ישראל (20)
+    {q:"מהי העיר העתיקה ביותר בישראל?",a:["ירושלים","יפו","באר שבע","עכו"],c:1,cat:"ישראל",fact:"יפו - אחת הערים העתיקות בעולם, עם התיישבות מלפני 4,000 שנה."},
+    {q:"מהו ההר הגבוה ביותר בישראל?",a:["מירון","חרמון","תבור","הצופים"],c:1,cat:"ישראל",fact:"הפסגה הישראלית של החרמון - 2,224 מטר."},
+    {q:"באיזו שנה שוחררה ירושלים?",a:["1965","1966","1967","1968"],c:2,cat:"ישראל",fact:"איחוד ירושלים - 7 ביוני 1967."},
+    {q:"מי היה ראש הממשלה במלחמת יום כיפור?",a:["אשכול","גולדה מאיר","רבין","בגין"],c:1,cat:"ישראל",fact:"גולדה מאיר הייתה האישה הרביעית בעולם שכיהנה כראש ממשלה."},
+    {q:"מהו הגוף המימי הנמוך ביותר בעולם?",a:["כנרת","ים המלח","טבריה","הירדן"],c:1,cat:"ישראל",fact:"ים המלח - כ-430 מטר מתחת לפני הים."},
+    {q:"כמה ימים יש בחג הסוכות?",a:["5","7","8","10"],c:1,cat:"ישראל",fact:"7 ימים, מסתיים בשמיני עצרת ושמחת תורה."},
+    {q:"מי כתב את התקווה?",a:["ביאליק","אימבר","טשרניחובסקי","רחל"],c:1,cat:"ישראל",fact:"נפתלי הרץ אימבר כתב ב-1878. רק הבית הראשון מושר כהמנון."},
+    {q:"מהי העיר הגדולה ביותר בישראל?",a:["תל אביב","ירושלים","חיפה","באר שבע"],c:1,cat:"ישראל",fact:"ירושלים - כ-950,000 תושבים."},
+    {q:"באיזו שנה נרצח יצחק רבין?",a:["1993","1994","1995","1996"],c:2,cat:"ישראל",fact:"רבין נרצח ב-4 בנובמבר 1995 בכיכר מלכי ישראל."},
+    {q:"מי הקים את עיר תל אביב?",a:["הרצל","רוטשילד","דיזנגוף","בן-גוריון"],c:2,cat:"ישראל",fact:"מאיר דיזנגוף היה ראש העיר הראשון והקים את אחוזת בית."},
+    {q:"מהו הצמח הלאומי של ישראל?",a:["זית","כלנית","צבר","רקפת"],c:1,cat:"ישראל",fact:"הכלנית נבחרה בהצבעה ציבורית ב-2007."},
+    {q:"מהו הנהר הארוך ביותר בישראל?",a:["הירקון","הירדן","הקישון","הלכיש"],c:1,cat:"ישראל",fact:"הירדן - 251 ק\"מ, מהחרמון לים המלח."},
+    {q:"מי היה הרמטכ\"ל במלחמת ששת הימים?",a:["דיין","רבין","בר-לב","שרון"],c:1,cat:"ישראל",fact:"רבין שימש כרמטכ\"ל ודיין כשר הביטחון."},
 
-        // ===== מיתולוגיה (15) =====
-        { q: "מי הוא אל הברקים במיתולוגיה היוונית?", a: ["פוסידון", "אפולו", "זאוס", "ארס"], c: 2, cat: "מיתולוגיה" },
-        { q: "מהו שמו של הסוס המכונף?", a: ["יוניקורן", "פגסוס", "קנטאור", "מינוטאור"], c: 1, cat: "מיתולוגיה" },
-        { q: "מי הוא אל החוכמה המצרי?", a: ["רע", "אנוביס", "תות", "אוזיריס"], c: 2, cat: "מיתולוגיה" },
-        { q: "מהו שמו של הפטיש של תור?", a: ["אקסקליבר", "מיולניר", "גונגניר", "סטורמברקר"], c: 1, cat: "מיתולוגיה" },
-        { q: "מי ביצע 12 עבודות?", a: ["אכילס", "הרקולס", "פרסאוס", "תזאוס"], c: 1, cat: "מיתולוגיה" },
-        { q: "מי היה אל הים היווני?", a: ["זאוס", "פוסידון", "הרמס", "הפייסטוס"], c: 1, cat: "מיתולוגיה" },
-        { q: "מהו שם חצי הסוס חצי האדם?", a: ["מינוטאור", "קנטאור", "סאטיר", "גריפון"], c: 1, cat: "מיתולוגיה" },
-        { q: "מי הייתה אלת היופי היוונית?", a: ["הרה", "אתנה", "אפרודיטה", "ארטמיס"], c: 2, cat: "מיתולוגיה" },
-        { q: "מהו שם הכלב התלת-ראשי ששמר על שאול?", a: ["פניקס", "קרברוס", "כימרה", "הידרה"], c: 1, cat: "מיתולוגיה" },
-        { q: "מי הוא אל השמש המצרי?", a: ["רע", "אנוביס", "תות", "הורוס"], c: 0, cat: "מיתולוגיה" },
-        { q: "מי היה אל המלחמה היווני?", a: ["אפולו", "ארס", "הרמס", "דיוניסוס"], c: 1, cat: "מיתולוגיה" },
-        { q: "מהו שם הציפור שקמה מהאפר?", a: ["גריפון", "פניקס", "רוק", "תנדרברד"], c: 1, cat: "מיתולוגיה" },
-        { q: "מי היה אבי האלים הנורדי?", a: ["תור", "לוקי", "אודין", "פריי"], c: 2, cat: "מיתולוגיה" },
-        { q: "מה הפך את מי שהביט במדוזה?", a: ["מת", "אבן", "עיוור", "מכושף"], c: 1, cat: "מיתולוגיה" },
-        { q: "מהו שם ספינת הפיראטים של תזאוס?", a: ["ארגו", "ספינת תזאוס", "טיטניק", "פגסוס"], c: 1, cat: "מיתולוגיה" },
+    // מיתולוגיה (16)
+    {q:"מי אל הברקים במיתולוגיה היוונית?",a:["פוסידון","אפולו","זאוס","ארס"],c:2,cat:"מיתולוגיה",fact:"זאוס היה מלך האלים וחי על הר האולימפוס."},
+    {q:"מהו שמו של הסוס המכונף?",a:["יוניקורן","פגסוס","קנטאור","מינוטאור"],c:1,cat:"מיתולוגיה",fact:"פגסוס נולד מדמה של מדוזה."},
+    {q:"מי אל החוכמה המצרי?",a:["רע","אנוביס","תות","אוזיריס"],c:2,cat:"מיתולוגיה",fact:"תות (Thoth) תואר עם ראש של איביס."},
+    {q:"מהו שמו של הפטיש של תור?",a:["אקסקליבר","מיולניר","גונגניר","סטורמברקר"],c:1,cat:"מיתולוגיה",fact:"רק מי שראוי יכול להרים את מיולניר."},
+    {q:"מי ביצע 12 עבודות?",a:["אכילס","הרקולס","פרסאוס","תזאוס"],c:1,cat:"מיתולוגיה",fact:"הרקולס ביצע את העבודות ככפרה על רצח משפחתו."},
+    {q:"מי היה אל הים היווני?",a:["זאוס","פוסידון","הרמס","הפייסטוס"],c:1,cat:"מיתולוגיה",fact:"פוסידון שלט גם ברעידות אדמה ובסוסים."},
+    {q:"מי אלת היופי היוונית?",a:["הרה","אתנה","אפרודיטה","ארטמיס"],c:2,cat:"מיתולוגיה",fact:"אפרודיטה נולדה מקצף הים לפי המיתוס."},
+    {q:"מהו שם הכלב התלת-ראשי ששמר על שאול?",a:["פניקס","קרברוס","כימרה","הידרה"],c:1,cat:"מיתולוגיה",fact:"קרברוס שמר שמתים לא יברחו מהעולם התחתון."},
+    {q:"מי אל השמש המצרי?",a:["רע","אנוביס","תות","הורוס"],c:0,cat:"מיתולוגיה",fact:"רע נסע כל יום בסירה על פני השמיים."},
+    {q:"מהו שם הציפור שקמה מהאפר?",a:["גריפון","פניקס","רוק","תנדרברד"],c:1,cat:"מיתולוגיה",fact:"הפניקס חי מאות שנים ונולד מחדש מאפרו."},
+    {q:"מי אבי האלים הנורדי?",a:["תור","לוקי","אודין","פריי"],c:2,cat:"מיתולוגיה",fact:"אודין הקריב את עינו תמורת חוכמה."},
+    {q:"מה קרה למי שהביט במדוזה?",a:["מת","הפך לאבן","התעוור","הוכשף"],c:1,cat:"מיתולוגיה",fact:"פרסאוס הצליח להרוג את מדוזה בעזרת מגן כמראה."},
+    {q:"מהו שם חצי הסוס חצי האדם?",a:["מינוטאור","קנטאור","סאטיר","גריפון"],c:1,cat:"מיתולוגיה",fact:"הקנטאור כירון היה מורה של גיבורים רבים כמו אכילס."},
 
-        // ===== אוכל (15) =====
-        { q: "מאיזו מדינה מגיעה הפיצה?", a: ["ארה\"ב", "צרפת", "איטליה", "יוון"], c: 2, cat: "אוכל" },
-        { q: "מהו התבלין היקר ביותר בעולם?", a: ["וניל", "זעפרן", "קרדמום", "קינמון"], c: 1, cat: "אוכל" },
-        { q: "מהו הפרי הנמכר ביותר בעולם?", a: ["תפוח", "בננה", "תפוז", "ענבים"], c: 1, cat: "אוכל" },
-        { q: "מהו הירק הנצרך ביותר בעולם?", a: ["עגבנייה", "תפוח אדמה", "בצל", "גזר"], c: 1, cat: "אוכל" },
-        { q: "מאיזו מדינה מגיע הסושי?", a: ["סין", "יפן", "תאילנד", "קוריאה"], c: 1, cat: "אוכל" },
-        { q: "מהו המשקה הנצרך ביותר בעולם אחרי מים?", a: ["קפה", "תה", "בירה", "חלב"], c: 1, cat: "אוכל" },
-        { q: "מאיזו מדינה מגיע הקימצ'י?", a: ["סין", "יפן", "קוריאה", "תאילנד"], c: 2, cat: "אוכל" },
-        { q: "מהו השם האיטלקי לרוטב עגבניות?", a: ["פסטו", "מרינרה", "אלפרדו", "בולונז"], c: 1, cat: "אוכל" },
-        { q: "מאיפה מגיע השוקולד במקור?", a: ["אפריקה", "מרכז אמריקה", "אירופה", "אסיה"], c: 1, cat: "אוכל" },
-        { q: "מהו הפרי שמכיל הכי הרבה ויטמין C?", a: ["תפוז", "לימון", "גויאבה", "קיווי"], c: 2, cat: "אוכל" },
-        { q: "מאיזו מדינה מגיע הפלאפל במקור?", a: ["ישראל", "לבנון", "מצרים", "סוריה"], c: 2, cat: "אוכל" },
-        { q: "מהו הגבינה הנמכרת ביותר בעולם?", a: ["צ'דר", "מוצרלה", "פרמזן", "גאודה"], c: 1, cat: "אוכל" },
-        { q: "כמה זמן לוקח להכין ביצה רכה?", a: ["3 דקות", "5 דקות", "7 דקות", "10 דקות"], c: 0, cat: "אוכל" },
-        { q: "מהו הרכיב העיקרי בגואקמולי?", a: ["עגבנייה", "אבוקדו", "לימון", "כוסברה"], c: 1, cat: "אוכל" },
-        { q: "מאיזו מדינה מגיע הקרואסון?", a: ["צרפת", "אוסטריה", "בלגיה", "שוויץ"], c: 1, cat: "אוכל" },
+    // אוכל (16)
+    {q:"מאיזו מדינה מגיעה הפיצה?",a:["ארה\"ב","צרפת","איטליה","יוון"],c:2,cat:"אוכל",fact:"הפיצה המודרנית הומצאה בנאפולי במאה ה-18."},
+    {q:"מהו התבלין היקר ביותר בעולם?",a:["וניל","זעפרן","קרדמום","קינמון"],c:1,cat:"אוכל",fact:"זעפרן עולה עד 10,000$ לקילו - נקטף ביד מפרחי כרכום."},
+    {q:"מהו הפרי הנמכר ביותר בעולם?",a:["תפוח","בננה","תפוז","ענבים"],c:1,cat:"אוכל",fact:"מעל 100 מיליארד בננות נאכלות כל שנה."},
+    {q:"מאיזו מדינה מגיע הסושי?",a:["סין","יפן","תאילנד","קוריאה"],c:1,cat:"אוכל",fact:"סושי במקור היה שיטה לשימור דגים באורז מותסס."},
+    {q:"מהו המשקה הנצרך ביותר אחרי מים?",a:["קפה","תה","בירה","חלב"],c:1,cat:"אוכל",fact:"כ-2 מיליארד כוסות תה נשתות כל יום בעולם."},
+    {q:"מאיזו מדינה מגיע הקימצ'י?",a:["סין","יפן","קוריאה","תאילנד"],c:2,cat:"אוכל",fact:"קימצ'י קיים כבר 3,000 שנה והוא מלא פרוביוטיקה."},
+    {q:"מאיפה מגיע השוקולד במקור?",a:["אפריקה","מרכז אמריקה","אירופה","אסיה"],c:1,cat:"אוכל",fact:"האצטקים שתו שוקולד חם עם פלפל חריף."},
+    {q:"מהו הפרי עם הכי הרבה ויטמין C?",a:["תפוז","לימון","גויאבה","קיווי"],c:2,cat:"אוכל",fact:"גויאבה מכילה פי 4 יותר ויטמין C מתפוז."},
+    {q:"מאיזו מדינה מגיע הפלאפל במקור?",a:["ישראל","לבנון","מצרים","סוריה"],c:2,cat:"אוכל",fact:"הפלאפל הומצא במצרים העתיקה ע\"י הנוצרים הקופטים."},
+    {q:"מהו הרכיב העיקרי בגואקמולי?",a:["עגבנייה","אבוקדו","לימון","כוסברה"],c:1,cat:"אוכל",fact:"גואקמולי הומצא על ידי האצטקים לפני 500 שנה."},
+    {q:"מאיזו מדינה מגיע הקרואסון?",a:["צרפת","אוסטריה","בלגיה","שוויץ"],c:1,cat:"אוכל",fact:"הקרואסון בעצם הומצא באוסטריה ונקרא 'קיפרל'."},
 
-        // ===== שפה ומילים (12) =====
-        { q: "מהי השפה המדוברת ביותר בעולם?", a: ["אנגלית", "סינית מנדרינית", "ספרדית", "הינדי"], c: 1, cat: "שפה" },
-        { q: "כמה אותיות באלפבית העברי?", a: ["20", "22", "24", "26"], c: 1, cat: "שפה" },
-        { q: "מהי השפה עם הכי הרבה מילים?", a: ["אנגלית", "סינית", "ערבית", "צרפתית"], c: 0, cat: "שפה" },
-        { q: "מה המשמעות של 'אוטופיה'?", a: ["מקום מושלם", "מקום שאינו קיים", "גן עדן", "עולם חדש"], c: 1, cat: "שפה" },
-        { q: "מאיזו שפה מגיעה 'אלגוריתם'?", a: ["לטינית", "ערבית", "יוונית", "סנסקריט"], c: 1, cat: "שפה" },
-        { q: "כמה שפות רשמיות יש באו\"ם?", a: ["4", "5", "6", "7"], c: 2, cat: "שפה" },
-        { q: "מהי השפה הרשמית של ברזיל?", a: ["ספרדית", "פורטוגזית", "אנגלית", "צרפתית"], c: 1, cat: "שפה" },
-        { q: "מאיזו שפה מגיעה המילה 'פיג'מה'?", a: ["ערבית", "הינדי", "פרסית", "טורקית"], c: 2, cat: "שפה" },
-        { q: "מהי האות הנפוצה ביותר באנגלית?", a: ["A", "E", "S", "T"], c: 1, cat: "שפה" },
-        { q: "באיזו שפה נכתבה התורה?", a: ["ארמית", "עברית", "יוונית", "לטינית"], c: 1, cat: "שפה" },
-        { q: "מהי השפה עם הכי הרבה דוברים ילידים?", a: ["אנגלית", "ספרדית", "סינית מנדרינית", "הינדי"], c: 2, cat: "שפה" },
-        { q: "מאיזו שפה מגיעה 'אלכוהול'?", a: ["לטינית", "ערבית", "יוונית", "פרסית"], c: 1, cat: "שפה" },
+    // שפה (14)
+    {q:"מהי השפה המדוברת ביותר בעולם?",a:["אנגלית","סינית מנדרינית","ספרדית","הינדי"],c:1,cat:"שפה",fact:"סינית מנדרינית - כ-920 מיליון דוברי שפת אם."},
+    {q:"כמה אותיות באלפבית העברי?",a:["20","22","24","26"],c:1,cat:"שפה",fact:"22 אותיות, כולן עיצורים. הניקוד מייצג תנועות."},
+    {q:"מהי השפה עם הכי הרבה מילים?",a:["אנגלית","סינית","ערבית","צרפתית"],c:0,cat:"שפה",fact:"לאנגלית יש מעל מיליון מילים."},
+    {q:"מה המשמעות של 'אוטופיה'?",a:["מקום מושלם","מקום שאינו קיים","גן עדן","עולם חדש"],c:1,cat:"שפה",fact:"מיוונית: 'ou' (לא) + 'topos' (מקום) = מקום שלא קיים."},
+    {q:"מאיזו שפה מגיעה 'אלגוריתם'?",a:["לטינית","ערבית","יוונית","סנסקריט"],c:1,cat:"שפה",fact:"על שם המתמטיקאי הפרסי אל-ח'ואריזמי מהמאה ה-9."},
+    {q:"כמה שפות רשמיות באו\"ם?",a:["4","5","6","7"],c:2,cat:"שפה",fact:"אנגלית, צרפתית, ספרדית, ערבית, סינית ורוסית."},
+    {q:"מהי השפה הרשמית של ברזיל?",a:["ספרדית","פורטוגזית","אנגלית","צרפתית"],c:1,cat:"שפה",fact:"ברזיל היא המדינה היחידה בדרום אמריקה שמדברת פורטוגזית."},
+    {q:"מהי האות הנפוצה ביותר באנגלית?",a:["A","E","S","T"],c:1,cat:"שפה",fact:"E מופיעה ב-11% מכל המילים באנגלית."},
+    {q:"מאיזו שפה מגיעה 'אלכוהול'?",a:["לטינית","ערבית","יוונית","פרסית"],c:1,cat:"שפה",fact:"מערבית 'אל-כוהול' - במקור הכוונה לאבקה דקה."},
+    {q:"מאיזו שפה מגיעה 'פיג'מה'?",a:["ערבית","הינדי","פרסית","טורקית"],c:2,cat:"שפה",fact:"מפרסית 'פאי-ג'אמה' = כיסוי רגליים."},
 
-        // ===== ידע כללי (15) =====
-        { q: "מהו הצבע שנוצר מערבוב אדום וכחול?", a: ["ירוק", "כתום", "סגול", "חום"], c: 2, cat: "ידע כללי" },
-        { q: "כמה צדדים יש למשושה?", a: ["5", "6", "7", "8"], c: 1, cat: "ידע כללי" },
-        { q: "מהי יחידת המידה של רעידת אדמה?", a: ["דציבל", "ריכטר", "הרץ", "קלוין"], c: 1, cat: "ידע כללי" },
-        { q: "מהי המטבע הרשמית של יפן?", a: ["יואן", "וון", "ין", "רופי"], c: 2, cat: "ידע כללי" },
-        { q: "כמה מדינות באיחוד האירופי?", a: ["25", "27", "28", "30"], c: 1, cat: "ידע כללי" },
-        { q: "כמה כוכבים על דגל ארה\"ב?", a: ["48", "50", "51", "52"], c: 1, cat: "ידע כללי" },
-        { q: "מהו הסמל הכימי של מים?", a: ["HO", "H2O", "OH2", "H3O"], c: 1, cat: "ידע כללי" },
-        { q: "כמה דקות יש ביום?", a: ["1,240", "1,340", "1,440", "1,540"], c: 2, cat: "ידע כללי" },
-        { q: "מהו הצבע הראשון בקשת?", a: ["כתום", "אדום", "צהוב", "סגול"], c: 1, cat: "ידע כללי" },
-        { q: "מהו סימן הזודיאק הראשון?", a: ["שור", "טלה", "תאומים", "דגים"], c: 1, cat: "ידע כללי" },
-        { q: "כמה קלפים בחפיסה רגילה?", a: ["48", "50", "52", "54"], c: 2, cat: "ידע כללי" },
-        { q: "מהו המספר הרומי של 50?", a: ["C", "L", "D", "V"], c: 1, cat: "ידע כללי" },
-        { q: "כמה מיתרים יש לגיטרה רגילה?", a: ["4", "5", "6", "7"], c: 2, cat: "ידע כללי" },
-        { q: "מהי השנה המעוברת הבאה?", a: ["2024", "2026", "2028", "2030"], c: 2, cat: "ידע כללי" },
-        { q: "כמה תווים יש בסולם מוזיקלי?", a: ["5", "6", "7", "8"], c: 2, cat: "ידע כללי" },
-    ];
+    // ידע כללי (18)
+    {q:"מהו הצבע שנוצר מערבוב אדום וכחול?",a:["ירוק","כתום","סגול","חום"],c:2,cat:"ידע כללי",fact:"בערבוב אור (לא צבע) אדום וכחול יוצרים מג'נטה."},
+    {q:"כמה צדדים יש למשושה?",a:["5","6","7","8"],c:1,cat:"ידע כללי",fact:"דבורים בונות חלות דבש במשושים כי זו הצורה הכי יעילה."},
+    {q:"מהי יחידת המידה של רעידת אדמה?",a:["דציבל","ריכטר","הרץ","קלוין"],c:1,cat:"ידע כללי",fact:"סולם ריכטר לוגריתמי - כל עלייה של 1 = פי 10 באנרגיה."},
+    {q:"מהי המטבע הרשמית של יפן?",a:["יואן","וון","ין","רופי"],c:2,cat:"ידע כללי",fact:"הין היפני הוא אחד המטבעות הנסחרים ביותר בעולם."},
+    {q:"כמה מדינות באיחוד האירופי?",a:["25","27","28","30"],c:1,cat:"ידע כללי",fact:"בריטניה עזבה ב-2020 (ברקזיט), נשארו 27."},
+    {q:"כמה כוכבים על דגל ארה\"ב?",a:["48","50","51","52"],c:1,cat:"ידע כללי",fact:"50 כוכבים = 50 מדינות, 13 פסים = 13 מושבות מקוריות."},
+    {q:"מהו הסמל הכימי של מים?",a:["HO","H2O","OH2","H3O"],c:1,cat:"ידע כללי",fact:"כל מולקולת מים מכילה 2 אטומי מימן ו-1 חמצן."},
+    {q:"כמה דקות יש ביום?",a:["1,240","1,340","1,440","1,540"],c:2,cat:"ידע כללי",fact:"24 שעות × 60 דקות = 1,440."},
+    {q:"מהו הצבע הראשון בקשת?",a:["כתום","אדום","צהוב","סגול"],c:1,cat:"ידע כללי",fact:"הסדר: אדום, כתום, צהוב, ירוק, כחול, כחול כהה, סגול."},
+    {q:"מהו סימן הזודיאק הראשון?",a:["שור","טלה","תאומים","דגים"],c:1,cat:"ידע כללי",fact:"טלה - מ-21 במרץ עד 19 באפריל."},
+    {q:"כמה קלפים בחפיסה רגילה?",a:["48","50","52","54"],c:2,cat:"ידע כללי",fact:"52 קלפים מייצגים את 52 השבועות בשנה."},
+    {q:"מהו המספר הרומי של 50?",a:["C","L","D","V"],c:1,cat:"ידע כללי",fact:"L=50, C=100, D=500, M=1000."},
+    {q:"כמה מיתרים יש לגיטרה?",a:["4","5","6","7"],c:2,cat:"ידע כללי",fact:"גיטרה בס יש 4, רגילה 6, ויש גם גיטרות עם 7 ו-12."},
+    {q:"כמה תווים בסולם מוזיקלי?",a:["5","6","7","8"],c:2,cat:"ידע כללי",fact:"דו, רה, מי, פה, סול, לה, סי - 7 תווים."},
+];
 
-    const categoryMeta = {
-        "גיאוגרפיה": { icon: "🌍" }, "היסטוריה": { icon: "📜" }, "מדע": { icon: "🔬" },
-        "תרבות": { icon: "🎭" }, "ספורט": { icon: "⚽" }, "טבע": { icon: "🦁" },
-        "ישראל": { icon: "🇮🇱" }, "מיתולוגיה": { icon: "⚡" }, "אוכל": { icon: "🍕" },
-        "שפה": { icon: "📝" }, "ידע כללי": { icon: "💡" },
-    };
+const categoryMeta = {
+    "גיאוגרפיה":{icon:"🌍"},"היסטוריה":{icon:"📜"},"מדע":{icon:"🔬"},
+    "תרבות":{icon:"🎭"},"ספורט":{icon:"⚽"},"טבע":{icon:"🦁"},
+    "ישראל":{icon:"🇮🇱"},"מיתולוגיה":{icon:"⚡"},"אוכל":{icon:"🍕"},
+    "שפה":{icon:"📝"},"ידע כללי":{icon:"💡"},
+};
 
-    // ===== STATE =====
-    let currentQuiz = [];
-    let currentIndex = 0;
-    let score = 0;
-    let wrongCount = 0;
-    let answered = false;
-    let correctIndicesThisQuiz = [];
-    let lastPercent = 0;
-    const QUIZ_SIZE = 18;
-    let deferredPrompt = null;
+// ===== SNARKY MESSAGES =====
+const scoreMessages = {
+    18:{emoji:"🏆",title:"18/18",sub:"וואו, איזה ביצוע מושלם! את/ה גאון/ית!"},
+    17:{emoji:"🌟",title:"17/18",sub:"So, so close... כמעט מושלם!"},
+    16:{emoji:"💪",title:"16/18",sub:"Keep up the good work! רק שתיים, מעולה"},
+    15:{emoji:"👏",title:"15/18",sub:"לא רע בכלל! אבל אפשר יותר..."},
+    14:{emoji:"😏",title:"14/18",sub:"סבבה, אבל אני יודע שאת/ה יכול/ה יותר"},
+    13:{emoji:"😐",title:"13/18",sub:"בול ממוצע. אתה כזה... בסדר"},
+    12:{emoji:"😅",title:"12/18",sub:"עברת! בקושי, אבל עברת"},
+    11:{emoji:"🫠",title:"11/18",sub:"אוקיי... נגיד שזה היה יום קשה"},
+    10:{emoji:"🤷",title:"10/18",sub:"חצי חצי. כוס חצי מלאה? חצי ריקה? את/ה תחליט/י"},
+    9:{emoji:"😬",title:"9/18",sub:"הגלגל מסתובב... ולא לטובתך"},
+    8:{emoji:"📱",title:"8/18",sub:"גוגל הוא חבר שלך, תשתמש/י בו"},
+    7:{emoji:"🤔",title:"7/18",sub:"אולי תנסה/י קטגוריה אחרת?"},
+    6:{emoji:"🙃",title:"6/18",sub:"בטח פשוט לא הבנת את השאלות, נכון?"},
+    5:{emoji:"💀",title:"5/18",sub:"היית יכול/ה גם לנחש ולקבל יותר..."},
+    4:{emoji:"🪦",title:"4/18",sub:"ידע כללי? יותר כמו ידע כלל-לא"},
+    3:{emoji:"🧱",title:"3/18",sub:"גם קיר היה עונה יותר טוב"},
+    2:{emoji:"🐒",title:"2/18",sub:"קוף עם עיניים עצומות היה מקבל יותר"},
+    1:{emoji:"🥴",title:"1/18",sub:"תשובה אחת נכונה! ...בטח בטעות"},
+    0:{emoji:"☠️",title:"0/18",sub:"ואללה כבוד, להצליח 0 מ-18 זה גם סוג של כישרון"},
+};
 
-    // ===== STATS =====
-    function loadStats() {
-        try { return JSON.parse(localStorage.getItem('triviaStats')) || defaultStats(); }
-        catch { return defaultStats(); }
-    }
-    function defaultStats() {
-        return { totalQuizzes: 0, totalCorrect: 0, totalQuestions: 0, bestPercent: 0, categories: {} };
-    }
-    function saveStats(s) { localStorage.setItem('triviaStats', JSON.stringify(s)); }
+// ===== STATE =====
+let currentQuiz=[], currentIndex=0, score=0, wrongCount=0, answered=false;
+let correctIndicesThisQuiz=[], lastPercent=0, selectedCategory=null;
+const QUIZ_SIZE=18;
+let deferredPrompt=null, isMuted=false;
 
-    function recordQuizResult(quizQ, correctIdx) {
-        const stats = loadStats();
-        stats.totalQuizzes++;
-        stats.totalCorrect += correctIdx.length;
-        stats.totalQuestions += quizQ.length;
-        const pct = Math.round((correctIdx.length / quizQ.length) * 100);
-        if (pct > stats.bestPercent) stats.bestPercent = pct;
-        quizQ.forEach((q, i) => {
-            if (!stats.categories[q.cat]) stats.categories[q.cat] = { correct: 0, total: 0 };
-            stats.categories[q.cat].total++;
-            if (correctIdx.includes(i)) stats.categories[q.cat].correct++;
-        });
-        saveStats(stats);
-    }
+// ===== AUDIO =====
+let audioCtx = null;
+function getAudioCtx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+}
+function playCorrectSound() {
+    if (isMuted) return;
+    try {
+        const ctx = getAudioCtx();
+        const o = ctx.createOscillator(); const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type = 'sine'; o.frequency.setValueAtTime(523, ctx.currentTime);
+        o.frequency.linearRampToValueAtTime(784, ctx.currentTime + 0.1);
+        g.gain.setValueAtTime(0.15, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+        o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.25);
+    } catch(e) {}
+}
+function playWrongSound() {
+    if (isMuted) return;
+    try {
+        const ctx = getAudioCtx();
+        const o = ctx.createOscillator(); const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type = 'square'; o.frequency.setValueAtTime(300, ctx.currentTime);
+        o.frequency.linearRampToValueAtTime(200, ctx.currentTime + 0.15);
+        g.gain.setValueAtTime(0.08, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+        o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.2);
+    } catch(e) {}
+}
+function toggleMute() {
+    isMuted = !isMuted;
+    document.getElementById('muteBtn').textContent = isMuted ? '🔇' : '🔊';
+    localStorage.setItem('triviaMuted', isMuted ? '1' : '0');
+}
 
-    // ===== SCREEN TRANSITION =====
-    function showScreen(id) {
-        const current = document.querySelector('.screen.active');
-        const next = document.getElementById(id);
-        if (current === next) return;
-
-        if (current) {
-            current.classList.remove('active');
-            current.classList.add('exiting');
-            current.addEventListener('animationend', () => {
-                current.classList.remove('exiting');
-            }, { once: true });
-        }
-
-        setTimeout(() => {
-            next.classList.add('active');
-        }, current ? 200 : 0);
-    }
-
-    // ===== QUIZ =====
-    function startQuiz() {
-        let pool = shuffleArray([...questions]);
-        currentQuiz = pool.slice(0, Math.min(QUIZ_SIZE, pool.length));
-        currentIndex = 0;
-        score = 0;
-        wrongCount = 0;
-        answered = false;
-        correctIndicesThisQuiz = [];
-        showScreen('quizScreen');
-        updateQuizStats();
-        showQuestion();
-    }
-
-    function showQuestion() {
-        if (currentIndex >= currentQuiz.length) { showResults(); return; }
-        answered = false;
-        const q = currentQuiz[currentIndex];
-        const letters = ['א', 'ב', 'ג', 'ד'];
-
-        document.getElementById('progressText').textContent = `שאלה ${currentIndex + 1} מתוך ${currentQuiz.length}`;
-        document.getElementById('progressBar').style.width = `${((currentIndex) / currentQuiz.length) * 100}%`;
-
-        const meta = categoryMeta[q.cat] || { icon: '💡' };
-        document.getElementById('questionCategory').innerHTML = `${meta.icon} ${q.cat}`;
-        document.getElementById('questionText').textContent = q.q;
-
-        // Animate question card
-        const card = document.getElementById('questionCard');
-        card.classList.remove('entering', 'exiting-q');
-        void card.offsetHeight;
-        card.classList.add('entering');
-
-        const grid = document.getElementById('answersGrid');
-        grid.innerHTML = q.a.map((ans, i) => `
-            <button class="answer-btn" onclick="selectAnswer(${i})">
-                <span class="answer-letter">${letters[i]}</span>
-                <span>${ans}</span>
-            </button>
-        `).join('');
-
-        document.getElementById('feedbackArea').classList.remove('show');
-    }
-
-    function selectAnswer(index) {
-        if (answered) return;
-        answered = true;
-        const q = currentQuiz[currentIndex];
-        const isCorrect = index === q.c;
-        const buttons = document.querySelectorAll('.answer-btn');
-        buttons.forEach((btn, i) => {
-            btn.classList.add('disabled');
-            if (i === q.c) btn.classList.add('correct');
-            if (i === index && !isCorrect) btn.classList.add('wrong');
-        });
-        if (isCorrect) { score++; correctIndicesThisQuiz.push(currentIndex); }
-        else { wrongCount++; }
-        updateQuizStats();
-        showFeedback(isCorrect, q);
-    }
-
-    function showFeedback(isCorrect, q) {
-        const card = document.getElementById('feedbackCard');
-        const icon = document.getElementById('feedbackIcon');
-        const title = document.getElementById('feedbackTitle');
-        const text = document.getElementById('feedbackText');
-        const nextBtn = document.getElementById('nextBtn');
-
-        card.className = 'feedback-card ' + (isCorrect ? 'correct-feedback' : 'wrong-feedback');
-        if (isCorrect) {
-            const m = ['מדהים!', 'נכון!', 'בול פגיעה!', 'מצוין!', 'יופי!'];
-            icon.textContent = '✅';
-            title.textContent = m[Math.floor(Math.random() * m.length)];
-            text.textContent = '';
-        } else {
-            const m = ['לא הפעם...', 'כמעט!', 'ממשיכים!', 'בפעם הבאה!'];
-            icon.textContent = '❌';
-            title.textContent = m[Math.floor(Math.random() * m.length)];
-            text.textContent = `התשובה הנכונה: ${q.a[q.c]}`;
-        }
-        nextBtn.textContent = currentIndex >= currentQuiz.length - 1 ? '📊 לתוצאות' : 'השאלה הבאה ➜';
-        document.getElementById('feedbackArea').classList.add('show');
-    }
-
-    function nextQuestion() {
-        // Animate out
-        const card = document.getElementById('questionCard');
-        card.classList.remove('entering');
-        card.classList.add('exiting-q');
-
-        setTimeout(() => {
-            currentIndex++;
-            showQuestion();
-        }, 200);
-    }
-
-    function updateQuizStats() {
-        document.getElementById('correctCount').textContent = score;
-        document.getElementById('wrongCount').textContent = wrongCount;
-    }
-
-    // ===== RESULTS =====
-    function showResults() {
-        recordQuizResult(currentQuiz, correctIndicesThisQuiz);
-        const total = currentQuiz.length;
-        const percent = Math.round((score / total) * 100);
-        lastPercent = percent;
-
-        let emoji, title, subtitle;
-        if (percent === 100) { emoji = '🏆'; title = 'מושלם!'; subtitle = 'ענית נכון על כל השאלות!'; }
-        else if (percent >= 80) { emoji = '🌟'; title = 'מרשים מאוד!'; subtitle = 'ידע כללי ברמה גבוהה!'; }
-        else if (percent >= 60) { emoji = '👍'; title = 'כל הכבוד!'; subtitle = 'תוצאה טובה, יש מקום לשיפור!'; }
-        else if (percent >= 40) { emoji = '😊'; title = 'לא רע!'; subtitle = 'נסו שוב ותשתפרו!'; }
-        else { emoji = '💪'; title = 'ממשיכים!'; subtitle = 'תרגול עושה את המאסטר!'; }
-
-        document.getElementById('resultsEmoji').textContent = emoji;
-        document.getElementById('resultsTitle').textContent = title;
-        document.getElementById('resultsSubtitle').textContent = subtitle;
-        document.getElementById('statCorrect').textContent = score;
-        document.getElementById('statWrong').textContent = wrongCount;
-        document.getElementById('scorePercent').textContent = `${percent}%`;
-
-        // Reset circle before showing
-        const circle = document.getElementById('scoreCircle');
-        circle.style.transition = 'none';
-        circle.style.strokeDashoffset = '408.4';
-        circle.style.stroke = 'var(--primary)';
-
-        showScreen('resultsScreen');
-
-        setTimeout(() => {
-            circle.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1)';
-            const offset = 408.4 * (1 - score / total);
-            circle.style.strokeDashoffset = offset;
-            if (percent >= 80) circle.style.stroke = 'var(--correct)';
-            else if (percent >= 50) circle.style.stroke = 'var(--gold)';
-            else circle.style.stroke = 'var(--wrong)';
-        }, 150);
-    }
-
-    // ===== SHARE =====
-    async function shareResults() {
-        const canvas = document.getElementById('shareCanvas');
-        const ctx = canvas.getContext('2d');
-        const W = 600, H = 400;
-        canvas.width = W; canvas.height = H;
-
-        // Background
-        const bg = ctx.createLinearGradient(0, 0, W, H);
-        bg.addColorStop(0, '#0C1117');
-        bg.addColorStop(1, '#131C27');
-        ctx.fillStyle = bg;
-        ctx.fillRect(0, 0, W, H);
-
-        // Decorative circles
-        ctx.fillStyle = 'rgba(167,139,250,0.06)';
-        ctx.beginPath(); ctx.arc(100, 80, 120, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = 'rgba(110,231,183,0.05)';
-        ctx.beginPath(); ctx.arc(500, 320, 100, 0, Math.PI*2); ctx.fill();
-
-        // Title
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#A78BFA';
-        ctx.font = '900 32px Heebo, sans-serif';
-        ctx.fillText('חידו', W/2, 55);
-
-        // Score circle
-        const cx = W/2, cy = 185, r = 65;
-        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
-        ctx.strokeStyle = '#1E3044'; ctx.lineWidth = 10; ctx.stroke();
-
-        const pct = lastPercent / 100;
-        const color = lastPercent >= 80 ? '#34D399' : lastPercent >= 50 ? '#FBBF24' : '#FB7185';
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, -Math.PI/2, -Math.PI/2 + Math.PI*2*pct);
-        ctx.strokeStyle = color; ctx.lineWidth = 10; ctx.lineCap = 'round'; ctx.stroke();
-
-        ctx.fillStyle = '#E8F0F8';
-        ctx.font = '900 40px Heebo, sans-serif';
-        ctx.fillText(`${lastPercent}%`, cx, cy + 12);
-
-        // Stats
-        ctx.font = '600 18px Heebo, sans-serif';
-        ctx.fillStyle = '#34D399';
-        ctx.fillText(`✅ ${score} נכונות`, W/2 - 80, 290);
-        ctx.fillStyle = '#FB7185';
-        ctx.fillText(`❌ ${wrongCount} שגויות`, W/2 + 80, 290);
-
-        // Bottom text
-        ctx.fillStyle = '#8BA4BC';
-        ctx.font = '400 16px Heebo, sans-serif';
-        ctx.fillText('בואו לשחק גם!', W/2, 345);
-
-        // Border
-        ctx.strokeStyle = '#1E3044';
-        ctx.lineWidth = 2;
-        ctx.roundRect(4, 4, W-8, H-8, 16);
-        ctx.stroke();
-
-        try {
-            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-            const file = new File([blob], 'trivia-score.png', { type: 'image/png' });
-
-            if (navigator.share && navigator.canShare({ files: [file] })) {
-                await navigator.share({
-                    title: 'חידו',
-                    text: `קיבלתי ${lastPercent}% בחידון טריוויה! (${score}/${currentQuiz.length})`,
-                    files: [file]
-                });
-            } else if (navigator.share) {
-                await navigator.share({
-                    title: 'חידו',
-                    text: `קיבלתי ${lastPercent}% בחידון טריוויה! (${score}/${currentQuiz.length})`
-                });
-            } else {
-                // Fallback: download image
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url; a.download = 'trivia-score.png';
-                a.click();
-                URL.revokeObjectURL(url);
-                showToast('התמונה הורדה!');
-            }
-        } catch (e) {
-            if (e.name !== 'AbortError') showToast('לא ניתן לשתף כרגע');
-        }
-    }
-
-    // ===== ALL-TIME STATS =====
-    function showAllStats() {
-        const stats = loadStats();
-        const avg = stats.totalQuestions > 0 ? Math.round((stats.totalCorrect / stats.totalQuestions) * 100) : 0;
-
-        document.getElementById('bigStatsGrid').innerHTML = `
-            <div class="big-stat-card"><div class="emoji">🎯</div><div class="value">${stats.totalQuizzes}</div><div class="label">חידונים</div></div>
-            <div class="big-stat-card"><div class="emoji">✅</div><div class="value">${stats.totalCorrect}</div><div class="label">תשובות נכונות</div></div>
-            <div class="big-stat-card"><div class="emoji">📈</div><div class="value">${avg}%</div><div class="label">ממוצע</div></div>
-            <div class="big-stat-card"><div class="emoji">🏆</div><div class="value">${stats.bestPercent}%</div><div class="label">שיא אישי</div></div>
-        `;
-
-        const cats = Object.entries(stats.categories).sort((a, b) => {
-            return (b[1].total > 0 ? b[1].correct/b[1].total : 0) - (a[1].total > 0 ? a[1].correct/a[1].total : 0);
-        });
-        const cont = document.getElementById('categoryStatsContainer');
-        if (!cats.length) {
-            cont.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:20px">שחקו חידון כדי לראות סטטיסטיקות!</p>';
-        } else {
-            cont.innerHTML = cats.map(([cat, d]) => {
-                const pct = d.total > 0 ? Math.round((d.correct/d.total)*100) : 0;
-                const meta = categoryMeta[cat] || { icon: '💡' };
-                return `<div class="category-stat-row">
-                    <div class="cat-stat-icon">${meta.icon}</div>
-                    <div class="cat-stat-name">${cat}</div>
-                    <div class="cat-stat-bar-container"><div class="cat-stat-bar" style="width:${pct}%"></div></div>
-                    <div class="cat-stat-percent">${pct}%</div>
-                </div>`;
-            }).join('');
-        }
-        showScreen('allStatsScreen');
-    }
-
-    function resetStats() {
-        if (confirm('בטוח? כל הנתונים יימחקו.')) {
-            localStorage.removeItem('triviaStats');
-            showAllStats();
-        }
-    }
-
-    // ===== NAV =====
-    function showStart() { showScreen('startScreen'); }
-    function quitQuiz() { if (confirm('לצאת מהחידון?')) showStart(); }
-
-    // ===== TOAST =====
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 2500);
-    }
-
-    // ===== PWA INSTALL =====
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        document.getElementById('installBanner').classList.add('show');
+// ===== STATS =====
+function loadStats() { try{return JSON.parse(localStorage.getItem('triviaStats'))||defaultStats()}catch{return defaultStats()} }
+function defaultStats() { return {totalQuizzes:0,totalCorrect:0,totalQuestions:0,bestPercent:0,categories:{}}; }
+function saveStats(s) { localStorage.setItem('triviaStats',JSON.stringify(s)); }
+function recordQuizResult(quizQ,correctIdx) {
+    const stats=loadStats(); stats.totalQuizzes++; stats.totalCorrect+=correctIdx.length; stats.totalQuestions+=quizQ.length;
+    const pct=Math.round((correctIdx.length/quizQ.length)*100);
+    if(pct>stats.bestPercent) stats.bestPercent=pct;
+    quizQ.forEach((q,i)=>{
+        if(!stats.categories[q.cat]) stats.categories[q.cat]={correct:0,total:0};
+        stats.categories[q.cat].total++;
+        if(correctIdx.includes(i)) stats.categories[q.cat].correct++;
     });
+    saveStats(stats);
+}
 
-    async function installApp() {
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-            document.getElementById('installBanner').classList.remove('show');
-            showToast('האפליקציה הותקנה!');
-        }
-        deferredPrompt = null;
-    }
+// ===== SCREENS =====
+function showScreen(id) {
+    const cur=document.querySelector('.screen.active'), nxt=document.getElementById(id);
+    if(cur===nxt) return;
+    if(cur){cur.classList.remove('active');cur.classList.add('exiting');cur.addEventListener('animationend',()=>cur.classList.remove('exiting'),{once:true});}
+    setTimeout(()=>nxt.classList.add('active'),cur?180:0);
+}
+function showStart(){showScreen('startScreen')}
+function showTopics(){renderTopics();showScreen('topicsScreen')}
+function quitQuiz(){if(confirm('לצאת מהחידון?'))showStart()}
 
-    function dismissInstall() {
-        document.getElementById('installBanner').classList.remove('show');
-    }
+// ===== TOPICS =====
+function renderTopics() {
+    const grid=document.getElementById('topicsGrid');
+    const cats=Object.keys(categoryMeta);
+    grid.innerHTML=cats.map(cat=>{
+        const count=questions.filter(q=>q.cat===cat).length;
+        const meta=categoryMeta[cat];
+        return `<div class="topic-card" onclick="startQuiz('${cat}')">
+            <div class="tc-icon">${meta.icon}</div>
+            <div class="tc-name">${cat}</div>
+            <div class="tc-count">${count} שאלות</div>
+        </div>`;
+    }).join('');
+}
 
-    // ===== UTILS =====
-    function shuffleArray(arr) {
-        const a = [...arr];
-        for (let i = a.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [a[i], a[j]] = [a[j], a[i]];
-        }
-        return a;
-    }
+// ===== QUIZ =====
+function startQuiz(category) {
+    selectedCategory=category||null;
+    let pool=selectedCategory?questions.filter(q=>q.cat===selectedCategory):[...questions];
+    pool=shuffleArray(pool);
+    currentQuiz=pool.slice(0,Math.min(QUIZ_SIZE,pool.length));
+    currentIndex=0; score=0; wrongCount=0; answered=false; correctIndicesThisQuiz=[];
+    showScreen('quizScreen'); updateQuizStats(); showQuestion();
+}
 
-    // Keyboard
-    document.addEventListener('keydown', (e) => {
-        if (!document.getElementById('quizScreen').classList.contains('active')) return;
-        if (answered && e.key === 'Enter') { nextQuestion(); return; }
-        const m = { '1': 0, '2': 1, '3': 2, '4': 3 };
-        if (m[e.key] !== undefined && !answered) selectAnswer(m[e.key]);
+function showQuestion() {
+    if(currentIndex>=currentQuiz.length){showResults();return;}
+    answered=false;
+    const q=currentQuiz[currentIndex], letters=['א','ב','ג','ד'];
+    document.getElementById('progressText').textContent=`שאלה ${currentIndex+1} מתוך ${currentQuiz.length}`;
+    document.getElementById('progressBar').style.width=`${(currentIndex/currentQuiz.length)*100}%`;
+    const meta=categoryMeta[q.cat]||{icon:'💡'};
+    document.getElementById('questionCategory').innerHTML=`${meta.icon} ${q.cat}`;
+    document.getElementById('questionText').textContent=q.q;
+    const card=document.getElementById('questionCard');
+    card.classList.remove('entering','exiting-q'); void card.offsetHeight; card.classList.add('entering');
+    document.getElementById('answersGrid').innerHTML=q.a.map((ans,i)=>
+        `<button class="answer-btn" onclick="selectAnswer(${i})"><span class="answer-letter">${letters[i]}</span><span>${ans}</span></button>`
+    ).join('');
+    document.getElementById('feedbackArea').classList.remove('show');
+    document.getElementById('factToggle').classList.remove('show');
+    document.getElementById('factContent').classList.remove('open');
+    document.getElementById('factToggleBtn').classList.remove('open');
+}
+
+function selectAnswer(index) {
+    if(answered) return; answered=true;
+    const q=currentQuiz[currentIndex], isCorrect=index===q.c;
+    document.querySelectorAll('.answer-btn').forEach((btn,i)=>{
+        btn.classList.add('disabled');
+        if(i===q.c) btn.classList.add('correct');
+        if(i===index&&!isCorrect) btn.classList.add('wrong');
     });
+    if(isCorrect){score++;correctIndicesThisQuiz.push(currentIndex);playCorrectSound();}
+    else{wrongCount++;playWrongSound();}
+    updateQuizStats(); showFeedback(isCorrect,q);
+}
 
-    // Polyfill roundRect for share canvas
-    if (!CanvasRenderingContext2D.prototype.roundRect) {
-        CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-            this.beginPath();
-            this.moveTo(x + r, y);
-            this.lineTo(x + w - r, y);
-            this.quadraticCurveTo(x + w, y, x + w, y + r);
-            this.lineTo(x + w, y + h - r);
-            this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-            this.lineTo(x + r, y + h);
-            this.quadraticCurveTo(x, y + h, x, y + h - r);
-            this.lineTo(x, y + r);
-            this.quadraticCurveTo(x, y, x + r, y);
-            this.closePath();
-        };
+function showFeedback(isCorrect,q) {
+    const card=document.getElementById('feedbackCard');
+    card.className='feedback-card '+(isCorrect?'correct-feedback':'wrong-feedback');
+    if(isCorrect){
+        const m=['מדהים!','נכון!','בול פגיעה!','מצוין!','יופי!'];
+        document.getElementById('feedbackIcon').textContent='✅';
+        document.getElementById('feedbackTitle').textContent=m[Math.floor(Math.random()*m.length)];
+        document.getElementById('feedbackText').textContent='';
+        // Show fact toggle
+        if(q.fact){
+            document.getElementById('factToggle').classList.add('show');
+            document.getElementById('factText').textContent=q.fact;
+            document.getElementById('factContent').classList.remove('open');
+            document.getElementById('factToggleBtn').classList.remove('open');
+        }
+    } else {
+        const m=['לא הפעם...','כמעט!','ממשיכים!','בפעם הבאה!'];
+        document.getElementById('feedbackIcon').textContent='❌';
+        document.getElementById('feedbackTitle').textContent=m[Math.floor(Math.random()*m.length)];
+        document.getElementById('feedbackText').textContent=`התשובה הנכונה: ${q.a[q.c]}`;
+        document.getElementById('factToggle').classList.remove('show');
     }
+    document.getElementById('nextBtn').textContent=currentIndex>=currentQuiz.length-1?'📊 לתוצאות':'השאלה הבאה ➜';
+    document.getElementById('feedbackArea').classList.add('show');
+}
 
-    // Register SW
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
+function toggleFact() {
+    document.getElementById('factContent').classList.toggle('open');
+    document.getElementById('factToggleBtn').classList.toggle('open');
+}
+
+function nextQuestion() {
+    const card=document.getElementById('questionCard');
+    card.classList.remove('entering'); card.classList.add('exiting-q');
+    setTimeout(()=>{currentIndex++;showQuestion();},200);
+}
+function updateQuizStats() {
+    document.getElementById('correctCount').textContent=score;
+    document.getElementById('wrongCount').textContent=wrongCount;
+}
+
+// ===== RESULTS =====
+function showResults() {
+    recordQuizResult(currentQuiz,correctIndicesThisQuiz);
+    const total=currentQuiz.length, pct=Math.round((score/total)*100); lastPercent=pct;
+    const msg=scoreMessages[score]||scoreMessages[Math.max(0,Math.min(score,18))];
+    const fallback=score>18?scoreMessages[18]:(score<0?scoreMessages[0]:{emoji:'🤷',title:`${score}/${total}`,sub:'מעניין...'});
+    const m=msg||fallback;
+
+    document.getElementById('resultsEmoji').textContent=m.emoji;
+    document.getElementById('resultsTitle').textContent=m.title;
+    document.getElementById('resultsSubtitle').textContent=m.sub;
+    document.getElementById('statCorrect').textContent=score;
+    document.getElementById('statWrong').textContent=wrongCount;
+    document.getElementById('scorePercent').textContent=`${pct}%`;
+
+    const circle=document.getElementById('scoreCircle');
+    circle.style.transition='none'; circle.style.strokeDashoffset='408.4'; circle.style.stroke='var(--primary)';
+    showScreen('resultsScreen');
+    setTimeout(()=>{
+        circle.style.transition='stroke-dashoffset 1.5s cubic-bezier(0.16,1,0.3,1)';
+        circle.style.strokeDashoffset=408.4*(1-score/total);
+        if(pct>=80) circle.style.stroke='var(--correct)';
+        else if(pct>=50) circle.style.stroke='var(--gold)';
+        else circle.style.stroke='var(--wrong)';
+    },150);
+    if(score===total) launchConfetti();
+}
+
+// ===== CONFETTI =====
+function launchConfetti() {
+    const c=document.getElementById('confettiContainer');
+    const colors=['#F59E0B','#FCD34D','#E74C3C','#FF8A65','#D97706','#34D399','#FFF5E6'];
+    for(let i=0;i<50;i++){
+        setTimeout(()=>{
+            const p=document.createElement('div'); p.className='confetti-piece';
+            p.style.left=Math.random()*100+'%';
+            p.style.backgroundColor=colors[Math.floor(Math.random()*colors.length)];
+            p.style.width=(Math.random()*8+5)+'px'; p.style.height=(Math.random()*8+5)+'px';
+            p.style.borderRadius=Math.random()>0.5?'50%':'2px';
+            p.style.animationDuration=(Math.random()*2+1.5)+'s';
+            c.appendChild(p); setTimeout(()=>p.remove(),4000);
+        },i*40);
     }
-    </script>
+}
+
+// ===== SHARE =====
+async function shareResults(){
+    const canvas=document.getElementById('shareCanvas'),ctx=canvas.getContext('2d');
+    const W=600,H=400; canvas.width=W;canvas.height=H;
+    const bg=ctx.createLinearGradient(0,0,W,H); bg.addColorStop(0,'#0C1117');bg.addColorStop(1,'#131C27');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(245,158,11,0.08)';ctx.beginPath();ctx.arc(100,80,120,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(231,76,60,0.06)';ctx.beginPath();ctx.arc(500,320,100,0,Math.PI*2);ctx.fill();
+    ctx.textAlign='center';ctx.fillStyle='#F59E0B';ctx.font='900 32px Heebo,sans-serif';ctx.fillText('חידו',W/2,55);
+    const cx=W/2,cy=185,r=65;
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#1E3044';ctx.lineWidth=10;ctx.stroke();
+    const pct=lastPercent/100,color=lastPercent>=80?'#34D399':lastPercent>=50?'#FBBF24':'#FB7185';
+    ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*pct);ctx.strokeStyle=color;ctx.lineWidth=10;ctx.lineCap='round';ctx.stroke();
+    ctx.fillStyle='#FFF5E6';ctx.font='900 40px Heebo,sans-serif';ctx.fillText(`${lastPercent}%`,cx,cy+12);
+    ctx.font='600 18px Heebo,sans-serif';ctx.fillStyle='#34D399';ctx.fillText(`✅ ${score} נכונות`,W/2-80,290);
+    ctx.fillStyle='#FB7185';ctx.fillText(`❌ ${wrongCount} שגויות`,W/2+80,290);
+    ctx.fillStyle='#BFA47A';ctx.font='400 16px Heebo,sans-serif';ctx.fillText('בואו לשחק גם!',W/2,345);
+    try{
+        const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
+        const file=new File([blob],'chido-score.png',{type:'image/png'});
+        if(navigator.share&&navigator.canShare({files:[file]})){
+            await navigator.share({title:'חידו',text:`קיבלתי ${lastPercent}% בחידו! (${score}/${currentQuiz.length})`,files:[file]});
+        }else if(navigator.share){
+            await navigator.share({title:'חידו',text:`קיבלתי ${lastPercent}% בחידו! (${score}/${currentQuiz.length})`});
+        }else{
+            const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='chido-score.png';a.click();URL.revokeObjectURL(url);showToast('התמונה הורדה!');
+        }
+    }catch(e){if(e.name!=='AbortError')showToast('לא ניתן לשתף כרגע')}
+}
+
+// ===== ALL STATS =====
+function showAllStats(){
+    const stats=loadStats(),avg=stats.totalQuestions>0?Math.round((stats.totalCorrect/stats.totalQuestions)*100):0;
+    document.getElementById('bigStatsGrid').innerHTML=`
+        <div class="big-stat-card"><div class="emoji">🎯</div><div class="value">${stats.totalQuizzes}</div><div class="label">חידונים</div></div>
+        <div class="big-stat-card"><div class="emoji">✅</div><div class="value">${stats.totalCorrect}</div><div class="label">תשובות נכונות</div></div>
+        <div class="big-stat-card"><div class="emoji">📈</div><div class="value">${avg}%</div><div class="label">ממוצע</div></div>
+        <div class="big-stat-card"><div class="emoji">🏆</div><div class="value">${stats.bestPercent}%</div><div class="label">שיא אישי</div></div>`;
+    const cats=Object.entries(stats.categories).sort((a,b)=>(b[1].total>0?b[1].correct/b[1].total:0)-(a[1].total>0?a[1].correct/a[1].total:0));
+    const cont=document.getElementById('categoryStatsContainer');
+    if(!cats.length) cont.innerHTML='<p style="color:var(--text-secondary);text-align:center;padding:20px">שחקו חידון כדי לראות סטטיסטיקות!</p>';
+    else cont.innerHTML=cats.map(([cat,d])=>{const pct=d.total>0?Math.round((d.correct/d.total)*100):0;const meta=categoryMeta[cat]||{icon:'💡'};
+        return `<div class="category-stat-row"><div class="cat-stat-icon">${meta.icon}</div><div class="cat-stat-name">${cat}</div><div class="cat-stat-bar-container"><div class="cat-stat-bar" style="width:${pct}%"></div></div><div class="cat-stat-percent">${pct}%</div></div>`;}).join('');
+    showScreen('allStatsScreen');
+}
+function resetStats(){if(confirm('בטוח? כל הנתונים יימחקו.')){localStorage.removeItem('triviaStats');showAllStats();}}
+
+// ===== UTILS =====
+function shuffleArray(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// Keyboard
+document.addEventListener('keydown',(e)=>{
+    if(!document.getElementById('quizScreen').classList.contains('active'))return;
+    if(answered&&e.key==='Enter'){nextQuestion();return;}
+    const m={'1':0,'2':1,'3':2,'4':3};
+    if(m[e.key]!==undefined&&!answered)selectAnswer(m[e.key]);
+});
+
+// PWA
+window.addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').classList.add('show');});
+async function installApp(){if(!deferredPrompt)return;deferredPrompt.prompt();const{outcome}=await deferredPrompt.userChoice;if(outcome==='accepted'){document.getElementById('installBanner').classList.remove('show');showToast('האפליקציה הותקנה!');}deferredPrompt=null;}
+function dismissInstall(){document.getElementById('installBanner').classList.remove('show');}
+
+// Load mute preference
+isMuted=localStorage.getItem('triviaMuted')==='1';
+document.getElementById('muteBtn').textContent=isMuted?'🔇':'🔊';
+
+// Register SW
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+// roundRect polyfill
+if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();};}
+</script>
 </body>
 </html>
